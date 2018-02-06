@@ -1,0 +1,32 @@
+{
+  "name": "microservice-generator",
+  "version": "1.0.0",
+  "description": "A node js tool to generate code for a project with CRUD operation over REST API for the given schema structure.",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jugnuagrawal/microservice-generator.git"
+  },
+  "keywords": [
+    "CRUD",
+    "Microservice",
+    "Generator",
+    "Node",
+    "JS",
+    "Express",
+    "Mongoose",
+    "REST"
+  ],
+  "author": "Jugnu Agrawal",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jugnuagrawal/microservice-generator/issues"
+  },
+  "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme",
+  "dependencies": {
+    "lodash": "^4.17.5"
+  }
+}
