@@ -59,11 +59,11 @@ function createProject(_data) {
     console.log(_name + '.controller.js created!');
     fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
     console.log(_name + '.schema.json created!');
-    fs.copyFileSync('templates/messages.template.json', path.join(_path, 'messages', _name + '.messages.json'));
+    fs.copyFileSync(path.join(__dirname,'templates/messages.template.json'), path.join(_path, 'messages', _name + '.messages.json'));
     console.log(_name + '.messages.json created!');
 
     //required once execution
-    fs.copyFileSync('templates/utils.template.js', path.join(_path,'utils','utils.js'))
+    fs.copyFileSync(path.join(__dirname,'templates/utils.template.js'), path.join(_path,'utils','utils.js'))
     console.log('utils.js created!');
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api)), 'utf-8')
     console.log('app.js created!');
