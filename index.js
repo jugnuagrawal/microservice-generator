@@ -70,3 +70,6 @@ function createProject(_data) {
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')
     console.log('package.json created!');
 }
+
+
+module.exports.createProject = createProject;
