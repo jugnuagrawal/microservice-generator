@@ -1,28 +1,16 @@
-const readline = require('readline');
 const path = require('path');
 const fs = require('fs');
-const _ = require('lodash');
 
 const package = require('./templates/package.template');
 const app = require('./templates/app.template');
 const controller = require('./templates/controller.template');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-rl.question('Enter your schema file name (schema.json): ', (_answer) => {
-    if (_answer) {
-        if (_answer.lastIndexOf('.json') == -1 || _answer.lastIndexOf('.json') != _answer.length - 5) {
-            _answer += ".json";
-        }
-        getSchema(_answer);
-    } else {
-        getSchema('schema.json');
-    }
-    rl.close();
-});
+String.prototype.toCamelCase = function() {
+    return this
+        .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
+        .replace(/\s/g, '')
+        .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+}
 
 function getSchema(_fileName) {
     if (fs.existsSync(_fileName)) {
@@ -36,7 +24,7 @@ function getSchema(_fileName) {
 }
 
 function createProject(_data) {
-    var _name = _.camelCase(_.lowerCase(_data.name));
+    var _name = _data.name.toCamelCase();
     var _api = _data.api ? _data.api : _name;
     var _path = path.join('../', _name);
     if (!fs.existsSync(_path)) {

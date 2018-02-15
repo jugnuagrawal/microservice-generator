@@ -7,26 +7,43 @@ This tool creates a microservice based on express js and mongoose js which can d
 
 Microservice Generator requires [Node.js](https://nodejs.org/) v4+ to run.
 
-Install the dependencies and start the tool.
-
 
 ```sh
-cd microservice-generator
-npm install
-node index
+npm install --save microservice-generator
 ```
 
 ### How to use
 
-- Place you schema.json (can be any name) in the microservice-generator folder and run the above command
-- Structure of schema.json
+- import microservice-generator to your project and pass the schema json.
+
+```
+const mistor = require('microservice-generator');
+
+var schema = {
+    "name":"Hello World",
+    "api":"/hello",
+    "schema":{
+        "from":{
+            "type":"String",
+            "required":true
+        },
+        "message":"String"
+    }
+}
+
+mistor.createProject(schema);
+
+```
+
+
+### Schema JSON Structure
 
 ```
 {
     "name":"user", //Required. Name of the microservice
-    "api":"/user", //Optional. The API URL you want to expose
+    "api":"/user", //Optional. The API URL of the microservice
     "schema":{
-        //any mongodb specification schema
+        //mongodb schema
     }
 }
 ```
