@@ -2,20 +2,19 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_name,_api){
+function _getContent(_name,_api,_database,_port){
     return `const path = require('path');
     const express = require('express');
     const bodyParser = require('body-parser');
     const log4js = require('log4js');
     const mongoose = require('mongoose');
-    const _ = require('lodash');
     const controller = require('./controllers/${_name}.controller');
     const messages = require('./messages/${_name}.messages');
     const logger = log4js.getLogger('Server');
     const app = express();
     const host = process.env.HOST || 'localhost';
-    const port = process.env.PORT || 3000;
-    const mongo_url = process.env.MONGO_URL || 'mongodb://localhost:27017/${_name}';
+    const port = process.env.PORT || ${_port};
+    const mongo_url = process.env.MONGO_URL || 'mongodb://localhost:27017/${_database}';
     
     //log4js configuration
     log4js.configure({

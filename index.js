@@ -1,32 +1,23 @@
 const path = require('path');
 const fs = require('fs');
-
 const package = require('./templates/package.template');
 const app = require('./templates/app.template');
 const controller = require('./templates/controller.template');
 
-String.prototype.toCamelCase = function() {
-    return this
-        .replace(/\s(.)/g, function($1) { return $1.toUpperCase(); })
-        .replace(/\s/g, '')
-        .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
-}
 
-function getSchema(_fileName) {
-    if (fs.existsSync(_fileName)) {
-        fs.readFile(_fileName, 'utf8', (_err, _data) => {
-            if (_err) throw _err;
-            createProject(JSON.parse(_data));
-        });
-    } else {
-        console.log(_fileName, ' does not exist in this folder.');
-    }
+String.prototype.toCamelCase = function () {
+    return this
+        .replace(/\s(.)/g, function ($1) { return $1.toUpperCase(); })
+        .replace(/\s/g, '')
+        .replace(/^(.)/, function ($1) { return $1.toLowerCase(); });
 }
 
 function createProject(_data) {
     var _name = _data.name.toCamelCase();
     var _api = _data.api ? _data.api : _name;
     var _path = path.join('../', _name);
+    var _database = _data.database ? _data.database : _name;
+    var _port = _data.port ? _data.port : 3000;
     if (!fs.existsSync(_path)) {
         fs.mkdirSync(_path);
     }
@@ -47,13 +38,13 @@ function createProject(_data) {
     console.log(_name + '.controller.js created!');
     fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
     console.log(_name + '.schema.json created!');
-    fs.copyFileSync(path.join(__dirname,'templates/messages.template.json'), path.join(_path, 'messages', _name + '.messages.json'));
+    fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'messages', _name + '.messages.json'));
     console.log(_name + '.messages.json created!');
 
     //required once execution
-    fs.copyFileSync(path.join(__dirname,'templates/utils.template.js'), path.join(_path,'utils','utils.js'))
+    fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'utils', 'utils.js'))
     console.log('utils.js created!');
-    fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api)), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')
     console.log('package.json created!');

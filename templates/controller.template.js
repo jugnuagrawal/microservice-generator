@@ -5,12 +5,11 @@ module.exports.getContent = _getContent;
 function _getContent(_name){
     return `
     const mongoose = require('mongoose');
-    const _ = require('lodash');
     const utils = require('../utils/utils');
     const schema = require('../schemas/${_name}.schema');
     const _schema = new mongoose.Schema(schema);
 
-    _schema.add({_id:{type:"String",required:true}});
+    _schema.add({_id:{type:"String"}});
     _schema.pre('save',utils.getNextId('${_name}'));
 
     const _model = mongoose.model('${_name}',_schema);

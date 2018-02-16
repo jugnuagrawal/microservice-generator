@@ -22,7 +22,6 @@ function _getContent(_name){
         "dependencies": {
           "body-parser": "^1.18.2",
           "express": "^4.16.2",
-          "lodash": "^4.17.5",
           "log4js": "^2.5.2",
           "mongoose": "^5.0.3"
         },

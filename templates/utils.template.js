@@ -1,5 +1,22 @@
 var mongoose = require("mongoose");
-var _ = require('lodash');
+
+function createId(next, size) {
+    var char = this.charAt(0).toUpperCase();
+    for (var i = 1; i < this.length; i++) {
+        if (this.charAt(i) == this.charAt(i).toUpperCase()) {
+            char += this.charAt(i);
+        }
+    }
+    var len = (next + '').length;
+    var padding = '';
+    for (var i = 0; i < (size - len); i++) {
+        padding += '0';
+    }
+    return char + padding + next;
+}
+
+String.prototype.createId = createId;
+
 var counterSchema = new mongoose.Schema({
     _id: {
         type: String
@@ -35,13 +52,13 @@ function _getNextId(collectionName) {
         var self = this;
         if (!self._id) {
             _getNext(collectionName,function(_err,_doc){
-                self._id = collectionName.charAt(0).toUpperCase()+_.padStart(_doc.next,8,'0');
+                self._id = collectionName.createId(_doc.next,10);
+                next();
             });
         } else {
             next();
         }
     };
 }
-
 
 module.exports.getNextId = _getNextId;

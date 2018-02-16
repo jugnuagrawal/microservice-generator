@@ -1,0 +1,12 @@
+{
+    "name":"user",
+    "api":"/user",
+    "schema":{
+        "name":"String",
+        "email":{
+            "type":"String",
+            "unique":true
+        },
+        "password":"String"
+    }
+}

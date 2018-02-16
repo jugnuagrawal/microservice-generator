@@ -1,6 +1,6 @@
 # Microservice Generator
 
-This tool creates a microservice based on express js and mongoose js which can do CRUD operation over HTTP using RESTful web service.
+This library creates a microservice based on express js and mongoose js which can do CRUD operation over HTTP using RESTful web service.
 
 
 ### Setup
@@ -12,16 +12,18 @@ Microservice Generator requires [Node.js](https://nodejs.org/) v4+ to run.
 npm install --save microservice-generator
 ```
 
-### How to use
+### Use like a node module
 
 - import microservice-generator to your project and pass the schema json.
 
-```
+```sh
 const mistor = require('microservice-generator');
 
 var schema = {
     "name":"Hello World",
     "api":"/hello",
+    "port":"9494",
+    "database":"myApp",
     "schema":{
         "from":{
             "type":"String",
@@ -36,19 +38,37 @@ mistor.createProject(schema);
 ```
 
 
-### Schema JSON Structure
+### Use with command line interface
+
+- clone microservice-generator to your workspace and pass the path of schema file.
+
+```sh
+git clone https://github.com/jugnuagrawal/microservice-generator.git
+cd microservice-generator
+node cli
+
+Enter the path of your schema file : schema.json
+
+#In the above example schema.json file is the microservice-generator folder
 
 ```
+
+
+### Schema JSON Structure
+
+```sh
 {
-    "name":"user", //Required. Name of the microservice
-    "api":"/user", //Optional. The API URL of the microservice
+    "name":"user", //Required. Name of this microservice
+    "api":"/user", //Optional. API URL of this microservice
+    "port":"9494", //Optional. Port number in which this microservice will be running
+    "database":"myApp", //Optional. Name of database in which this microservice will create it's collection
     "schema":{
         //mongodb schema
     }
 }
 ```
 - Example mongodb schema
-```
+```sh
 {
     "name":"String",
     "email":{
