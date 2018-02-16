@@ -10,6 +10,7 @@ function _getContent(_name,_api,_database,_port){
     const mongoose = require('mongoose');
     const controller = require('./controllers/${_name}.controller');
     const messages = require('./messages/${_name}.messages');
+    const schema = require('./schemas/${_name}.schema');
     const logger = log4js.getLogger('Server');
     const app = express();
     const host = process.env.HOST || 'localhost';
@@ -63,6 +64,19 @@ function _getContent(_name,_api,_database,_port){
     app.put('${path.join(_api,':id')}',controller.update);
     app.delete('${path.join(_api,':id')}',controller.delete);
     
+
+    app.set('view engine', 'ejs');
+    app.set('views', path.join(__dirname,'apidoc'));
+    app.get('/apidoc',function(_req,_res){
+        _res.render('index',{
+            host:host,
+            port:port,
+            name:'',
+            api:'${_api}',
+            schema:schema
+        });
+    });
+
     //Invalid routes handle
     app.use('*',function(_req,_res){
         _res.status(404).json({message:messages.error['404']});
@@ -72,6 +86,7 @@ function _getContent(_name,_api,_database,_port){
     //Starting server
     app.listen(port,host,function(){
         console.log('Server is listening at ','http://'+host+':'+port+'/');
+        console.log('API Documentation at ','http://'+host+':'+port+'/apidoc');
     });`;
 
 }

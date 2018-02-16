@@ -33,7 +33,10 @@ function createProject(_data) {
     if (!fs.existsSync(path.join(_path, 'utils'))) {
         fs.mkdirSync(path.join(_path, 'utils'));
     }
-
+    if (!fs.existsSync(path.join(_path, 'apidoc'))) {
+        fs.mkdirSync(path.join(_path, 'apidoc'));
+    }
+    
     fs.writeFileSync(path.join(_path, 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
     console.log(_name + '.controller.js created!');
     fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
@@ -44,6 +47,8 @@ function createProject(_data) {
     //required once execution
     fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'utils', 'utils.js'))
     console.log('utils.js created!');
+    fs.copyFileSync(path.join(__dirname, 'templates/index.ejs'), path.join(_path, 'apidoc', 'index.ejs'))
+    console.log('index.ejs created!');
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')

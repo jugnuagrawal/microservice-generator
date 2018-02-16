@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>API Documentation</title>
+</head>
+<style>
+    * {
+        padding: 0;
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        color: #333;
+    }
+
+    header {
+        padding-bottom: 15px;
+    }
+
+    body {
+        padding: 15px;
+        background: #efefef;
+    }
+
+    .api {
+        width: 60%;
+        height: calc(100vh - 104px);
+        float: left;
+        overflow-y: auto;
+    }
+
+    .json {
+        float: left;
+        width: calc(40% - 17px);
+        height: calc(100vh - 117px);
+        background: #fff;
+        margin-top: 15px;
+        margin-left: 15px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        overflow: hidden;
+    }
+
+    .json h3 {
+        padding: 15px;
+        background: #333;
+        color: #fff;
+    }
+
+    .json pre {
+        padding: 15px;
+        height: calc(100vh - 214px);
+        overflow-y: auto;
+        font-size: 18px;
+    }
+
+    .block {
+        border-radius: 5px;
+        overflow: hidden;
+        margin: 15px 0;
+        background: #fff;
+    }
+
+    .block .body {
+        padding: 15px;
+    }
+
+    .block .header span.method {
+        text-align: center;
+        padding: 10px;
+        width: 100px;
+        height: 30px;
+        display: inline-block;
+        color: #fff;
+        font-size: 22px;
+        font-weight: bold;
+    }
+
+    .block .header span.url {
+        font-size: 22px;
+        padding: 10px;
+    }
+
+    .block .header {
+        line-height: 30px;
+    }
+     .block .header:hover {
+        cursor:pointer;
+    }
+
+    .get {
+        border: 1px solid #3F51B5;
+    }
+
+    .get .header {
+        background: #E8EAF6;
+    }
+
+    .get .header span.method {
+        background: #3F51B5;
+    }
+
+    .get .header span.url {
+        color: #3F51B5;
+    }
+
+    .post {
+        border: 1px solid #4CAF50;
+    }
+
+    .post .header {
+        background: #E8F5E9;
+    }
+
+    .post .header span.method {
+        background: #4CAF50;
+    }
+
+    .post .header span.url {
+        color: #4CAF50;
+    }
+
+    .put {
+        border: 1px solid #FF9800;
+    }
+
+    .put .header {
+        background: #FFF3E0;
+    }
+
+    .put .header span.method {
+        background: #FF9800;
+    }
+
+    .put .header span.url {
+        color: #FF9800;
+    }
+
+    .delete {
+        border: 1px solid #F44336;
+    }
+
+    .delete .header {
+        background: #FFEBEE;
+    }
+
+    .delete .header span.method {
+        background: #F44336;
+    }
+
+    .delete .header span.url {
+        color: #F44336;
+    }
+
+    table thead {
+        text-align: left;
+    }
+
+    table {
+        width: 90%;
+    }
+
+    table tr th,
+    table tr td {
+        width: 40%;
+        padding: 10px;
+        vertical-align: top;
+    }
+
+    table tr td pre {
+        padding: 10px;
+        background: #ccc;
+        border-radius: 5px;
+    }
+
+    .info-text {
+        font-weight: normal;
+        font-size: 13px;
+    }
+
+    .info {
+        color: #3F51B5;
+    }
+
+    .success {
+        color: #4CAF50;
+    }
+
+    .warning {
+        color: #FF9800;
+    }
+
+    .danger {
+        color: #F44336;
+    }
+    .collapse{
+        display:none;
+    }
+</style>
+
+<body>
+    <header>
+        <h1><%=name%> API</h1>
+        <small>[ http://<%=host%>:<%=port%> ]</small>
+    </header>
+    <div class="api" onClick="toggle(event)">
+        <div class="block get">
+            <div class="header">
+                <span class="method">GET</span>
+                <span class="url"><%=api%>/count</span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>filter
+                                <sup>
+                                    <small class="info">optional</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in query</small>
+                                </div>
+                            </th>
+                            <td>
+                                Returns the no of records based on the filter
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Success
+                            </td>
+                            <td>
+                                <pre>Number</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Internal Server Error
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="block get" >
+            <div class="header">
+                <span class="method">GET</span>
+                <span class="url"><%=api%></span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>select
+                                <sup>
+                                    <small class="info">optional</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in query</small>
+                                </div>
+                            </th>
+                            <td>
+                                Returns the records with the selected fields
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>filter
+                                <sup>
+                                    <small class="info">optional</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in query</small>
+                                </div>
+                            </th>
+                            <td>
+                                Returns the records based on the filter
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Records found
+                            </td>
+                            <td>
+                                <pre>[#DataModel]</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Internal Server Error
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="block get">
+            <div class="header">
+                <span class="method">GET</span>
+                <span class="url"><%=api%>/{id}</span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>id
+                                <sup>
+                                    <small class="danger">*required</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in path</small>
+                                </div>
+                            </th>
+                            <td>
+                                ID of the record to fetch
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>select
+                                <sup>
+                                    <small class="info">optional</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in query</small>
+                                </div>
+                            </th>
+                            <td>
+                                Returns the record with the selected fields
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Record found
+                            </td>
+                            <td>
+                                <pre>#DataModel</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">404
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Record not found
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>Internal Server Error</td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="block post">
+            <div class="header">
+                <span class="method">POST</span>
+                <span class="url"><%=api%></span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>body
+                                <sup>
+                                    <small class="danger">*required</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>JSON data in body</small>
+                                </div>
+                            </th>
+                            <td>
+                                <pre>#DataModel</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Record created successfully
+                            </td>
+                            <td>
+                                <pre>{ id : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">401
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Bad Parameters
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Internal Server Error
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="block put">
+            <div class="header">
+                <span class="method">PUT</span>
+                <span class="url"><%=api%>/{id}</span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>id
+                                <sup>
+                                    <small class="danger">*required</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in path</small>
+                                </div>
+                            </th>
+                            <td>
+                                ID of the record to update
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>body
+                                <sup>
+                                    <small class="danger">*required</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>JSON data in body</small>
+                                </div>
+                            </th>
+                            <td>
+                                <pre>#DataModel</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Record updated successfully
+                            </td>
+                            <td>
+                                <pre>{ id : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">401
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Bad Parameters
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Internal Server Error
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="block delete">
+            <div class="header">
+                <span class="method">DELETE</span>
+                <span class="url"><%=api%>/{id}</span>
+            </div>
+            <div class="body">
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Parameters</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>id
+                                <sup>
+                                    <small class="danger">*required</small>
+                                </sup>
+                                <div class="info-text">
+                                    <small>string in path</small>
+                                </div>
+                            </th>
+                            <td>
+                                ID of the record to delete
+                            </td>
+                        </tr>
+                    </tbody>
+                    <thead>
+                        <tr>
+                            <th colspan="2">Response</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th class="success">200
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Record deleted successfully
+                            </td>
+                            <td>
+                                <pre>{ id : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="warning">403
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Unauthorised
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th class="danger">500
+                                <div class="info-text">
+                                    <small>status code</small>
+                                </div>
+                            </th>
+                            <td>
+                                Internal Server Error
+                            </td>
+                            <td>
+                                <pre>{ message : String }</pre>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="json">
+        <h3>#DataModel</h3>
+        <pre><%=JSON.stringify(schema,undefined,4).replace(/"/g,'')%></pre>
+    </div>
+    <script>
+    function toggle(e){
+        if(e.target.nextElementSibling && e.target.nextElementSibling.classList.contains('body')){
+            if(e.target.nextElementSibling.classList.contains('collapse')){
+                e.target.nextElementSibling.classList.remove('collapse')
+            }else{
+                e.target.nextElementSibling.classList.add('collapse')
+            }
+        }
+    }
+    </script>
+</body>
+
+</html>
