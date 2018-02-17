@@ -79,6 +79,9 @@ Enter the path of your schema file : schema.json
     "password":"String"
 }
 ```
+
+<!--[API Documentation](https://github.com/jugnuagrawal/microservice-generator/wiki)-->
+
 License
 ----
 

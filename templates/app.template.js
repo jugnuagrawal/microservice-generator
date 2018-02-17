@@ -28,7 +28,7 @@ function _getContent(_name,_api,_database,_port){
     
     //logging each request
     app.use(function(_req,_res,_next){
-        logger.info(_req.method,_req.path,_req.params);
+        logger.info(_req.method,_req.path,_req.params,_req.query,_req.body);
         _next();
     });
     
@@ -58,6 +58,7 @@ function _getContent(_name,_api,_database,_port){
     });*/
     
     //CRUD routes
+    app.get('${_api}/count',controller.count);
     app.get('${_api}',controller.read);
     app.post('${_api}',controller.create);
     app.get('${path.join(_api,':id')}',controller.read);

@@ -8,8 +8,12 @@ const rl = readline.createInterface({
 });
 
 function ask() {
-    rl.question('Enter the path of your schema file : ', (_fileName) => {
-        if (_fileName.match(/^[\w\s\\\/]+\.json$/)) {
+    rl.question('Enter the path of your schema file [default: sampleSchema.json] : ', (_fileName) => {
+        if(!_fileName.trim()){
+            console.log('No file name entered, using sampleSchema.json');
+            rl.close();
+            getSchema('sampleSchema.json');            
+        }else if (_fileName.match(/^[\w\s\\\/]+\.json$/)) {
             getSchema(_fileName);
             rl.close();
         } else {

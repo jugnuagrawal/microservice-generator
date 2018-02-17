@@ -1,0 +1,15 @@
+{
+    "name":"sampleService",
+    "api":"/user",
+    "schema":{
+        "name":"String",
+        "email":{
+            "type":"String",
+            "unique":true,
+            "required":true
+        },
+        "password":"String",
+        "contactNo":"Number",
+        "gender":"String"
+    }
+}
