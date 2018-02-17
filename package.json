@@ -1,10 +1,10 @@
 {
   "name": "microservice-generator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A node js library to generate a microservice capable of doing CRUD operation over REST API for the given schema structure.",
   "main": "index.js",
-  "scripts":{
-    "start":"node cli"
+  "scripts": {
+    "start": "node cli"
   },
   "repository": {
     "type": "git",
