@@ -16,13 +16,13 @@ npm install --save microservice-generator
 
 - import microservice-generator to your project and pass the schema json.
 
-```sh
+```javascript
 const generator = require('microservice-generator');
 
 var schema = {
     "name":"Hello World",
     "api":"/hello",
-    "port":"9494",
+    "port":9494,
     "database":"myApp",
     "schema":{
         "from":{
@@ -64,19 +64,19 @@ Enter the path of your schema file [default: sampleSchema.json] : schema.json
 
 ### Schema JSON Structure
 
-```sh
+```javascript
 {
-    "name":"user", #Required. Name of this microservice
-    "api":"/user", #Optional. API URL of this microservice
-    "port":"9494", #Optional. Port number in which this microservice will be running
-    "database":"myApp", #Optional. Name of database in which this microservice will create it's collection
+    "name":"user", //Required. Name of this microservice
+    "api":"/user", //Optional. API URL of this microservice
+    "port":9494, //Optional. Port number in which this microservice will be running
+    "database":"myApp", //Optional. Name of database in which this microservice will create it's collection
     "schema":{
-        #mongoose schema
+        //mongoose schema
     }
 }
 ```
 - Example mongoose schema
-```sh
+```javascript
 {
     "name":"String",
     "email":{
