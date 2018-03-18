@@ -19,8 +19,8 @@ function _getContent(_name,_api,_database,_port){
     
     //log4js configuration
     log4js.configure({
-        appenders: { 'out': { type: 'stdout' } },
-        categories: { default: { appenders: ['out'], level: 'info' } }
+        appenders: { 'out': { type: 'stdout' },server: { type: 'file', filename: 'logs/server.log' ,maxLogSize:52428800} },
+        categories: { default: { appenders: ['out','server'], level: 'info' } }
       });
     
     //body parser middleware
@@ -28,7 +28,7 @@ function _getContent(_name,_api,_database,_port){
     
     //logging each request
     app.use(function(_req,_res,_next){
-        logger.info(_req.method,_req.path,_req.params,_req.query,_req.body);
+        logger.info(_req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,_req.path,_req.params,_req.query,_req.body);
         _next();
     });
     
@@ -50,7 +50,7 @@ function _getContent(_name,_api,_database,_port){
     
     // Uncomment and right your own business logic to do Authentication check
     /*app.use(function(_req,_res,_next){
-        if(_req.headers.Authorization){
+        if(_req.headers.authorization){
             next();
         }else{
             _res.status(401).json({message:messages.error['401']});

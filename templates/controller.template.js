@@ -15,9 +15,15 @@ function _getContent(_name){
 
     const _model = mongoose.model('${_name}',_schema);
 
+    log4js.configure({
+        appenders: { 'out': { type: 'stdout' },controller: { type: 'file', filename: 'logs/controller.log',maxLogSize:52428800 } },
+        categories: { default: { appenders: ['out','controller'], level: 'info' } }
+    });
+
     function _create(_req,_res){
         _model.create(_req.body,function(_err,_data){
             if(_err){
+                logger.error(_err);
                 _res.status(400).json({code:_err.code,message:_err.message});
             }else{
                 _res.status(200).json(_data);
@@ -65,6 +71,7 @@ function _getContent(_name){
         query.exec(_handler);
         function _handler(_err,_data){
             if(_err){
+                logger.error(_err);
                 _res.status(400).json({code:_err.code,message:_err.message});
             }else{
                 _res.status(200).json(_data);
@@ -75,6 +82,7 @@ function _getContent(_name){
     function _update(_req,_res){
         _model.findOneAndUpdate({_id:_req.params.id},_req.body,function(_err,_data){
             if(_err){
+                logger.error(_err);
                 _res.status(400).json({code:_err.code,message:_err.message});
             }else{
                 _res.status(200).json(_data);
@@ -85,6 +93,7 @@ function _getContent(_name){
     function _delete(_req,_res){
         _model.findByIdAndRemove(_req.params.id,function(_err,_data){
             if(_err){
+                logger.error(_err);
                 _res.status(400).json({code:_err.code,message:_err.message});
             }else{
                 _res.status(200).json(_data);
@@ -99,6 +108,7 @@ function _getContent(_name){
         }
         _model.count(filter,function(_err,_count){
             if(_err){
+                logger.error(_err);
                 _res.status(400).json({code:_err.code,message:_err.message});
             }else{
                 _res.status(200).end(_count);
