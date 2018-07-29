@@ -27,33 +27,36 @@ function _getContent(_name,_api,_database,_port){
     app.use(bodyParser.json());
     
     //logging each request
-    app.use(function(_req,_res,_next){
-        logger.info(_req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,_req.path,_req.params,_req.query,_req.body);
-        _next();
+    app.use((req,res,next)=>{
+        logger.info(req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,req.path,req.params,req.query,req.body);
+        res.setHeader('Access-Control-Allow-Origin','*');
+        res.setHeader('Access-Control-Allow-Methods','*');
+        res.setHeader('Access-Control-Allow-Headers','*');
+        next();
     });
     
     //checking mongodb is available
-    app.use(function(_req,_res,_next){
+    app.use((req,res,next)=>{
         if (mongoose.connections.length == 0 || mongoose.connections[0].readyState != 1) {
-            mongoose.connect(mongo_url, function (_err) {
-                if (_err) {
-                    logger.error(_err);
-                    _res.status(500).json({message:messages.error['500']});
+            mongoose.connect(mongo_url, (err)=>{
+                if (err) {
+                    logger.error(err);
+                    res.status(500).json({message:messages.error['500']});
                 } else {
-                    _next();
+                    next();
                 }
             });
         }else{
-            _next();
+            next();
         }
     });
     
     // Uncomment and right your own business logic to do Authentication check
-    /*app.use(function(_req,_res,_next){
-        if(_req.headers.authorization){
+    /*app.use((req,res,next)=>{
+        if(req.headers.authorization){
             next();
         }else{
-            _res.status(401).json({message:messages.error['401']});
+            res.status(401).json({message:messages.error['401']});
         }
     });*/
     
@@ -68,8 +71,8 @@ function _getContent(_name,_api,_database,_port){
 
     app.set('view engine', 'ejs');
     app.set('views', path.join(__dirname,'apidoc'));
-    app.get('/apidoc',function(_req,_res){
-        _res.render('index',{
+    app.get('/apidoc',(req,res)=>{
+        res.render('index',{
             host:host,
             port:port,
             name:'',
@@ -79,15 +82,15 @@ function _getContent(_name,_api,_database,_port){
     });
 
     //Invalid routes handle
-    app.use('*',function(_req,_res){
-        _res.status(404).json({message:messages.error['404']});
+    app.use('*',(req,res)=>{
+        res.status(404).json({message:messages.error['404']});
     });
     
     
     //Starting server
-    app.listen(port,host,function(){
-        console.log('Server is listening at ','http://'+host+':'+port+'/');
-        console.log('API Documentation at ','http://'+host+':'+port+'/apidoc');
+    app.listen(port,host,()=>{
+        logger.info('Server is listening at ','http://'+host+':'+port+'/');
+        logger.info('API Documentation at ','http://'+host+':'+port+'/apidoc');
     });`;
 
 }

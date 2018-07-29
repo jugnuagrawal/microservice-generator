@@ -39,7 +39,7 @@ function createProject(_data) {
     
     fs.writeFileSync(path.join(_path, 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
     console.log(_name + '.controller.js created!');
-    fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema,null,4), 'utf-8')
     console.log(_name + '.schema.json created!');
     fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'messages', _name + '.messages.json'));
     console.log(_name + '.messages.json created!');

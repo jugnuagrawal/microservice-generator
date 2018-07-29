@@ -28,5 +28,9 @@
   "bugs": {
     "url": "https://github.com/jugnuagrawal/microservice-generator/issues"
   },
-  "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme"
+  "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme",
+  "preferGlobal": true,
+  "bin": {
+    "misgen": "./cli.js"
+  }
 }

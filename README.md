@@ -22,7 +22,7 @@ const generator = require('microservice-generator');
 var schema = {
     "name":"Hello World",
     "api":"/hello",
-    "port":9494,
+    "port":3000,
     "database":"myApp",
     "schema":{
         "from":{
