@@ -11,7 +11,7 @@ Microservice Generator requires [Node.js](https://nodejs.org/) v4+ to run.
 ### Use like a node module
 
 ```sh
-npm install --save microservice-generator
+$ npm install --save microservice-generator
 ```
 
 - import microservice-generator to your project and pass the schema json.
@@ -40,25 +40,14 @@ generator.createProject(schema);
 
 ### Use with command line interface
 
-- clone microservice-generator to your workspace and pass the path of schema file.
-
 ```sh
-git clone https://github.com/jugnuagrawal/microservice-generator.git
-cd microservice-generator
-node cli
+$ npm install -g microservice-generator
 
-or
+$ misgen
 
-npm install microservice-generator
-cd node_modules/microservice-generator
-node cli
+Enter the full path of your schema file [sampleSchema.json] : /usr/home/workspace/schema.json
 
-#After completing one of the above steps you will get a prompt
-
-Enter the path of your schema file [default: sampleSchema.json] : schema.json
-
-#In the above example schema.json file is the microservice-generator folder
-#If you will not provide specify any file, it will take sampleSchema.json file present in the project folder
+#The project folder will be generated at the location of schema.json file
 ```
 
 
