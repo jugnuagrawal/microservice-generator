@@ -53,7 +53,7 @@ function createProject(_data) {
         fs.mkdirSync(path.join(_path, 'api', 'swagger'));
     }
 
-    fse.copySync(path.join(__dirname, 'apidoc'), path.join(__dirname, _path, 'apidoc'));
+    fse.copySync(path.join(__dirname, 'apidoc'), path.join(_path, 'apidoc'));
 
     fs.writeFileSync(path.join(_path, 'api', 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
     console.log(_name + '.controller.js created!');
