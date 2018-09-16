@@ -16,7 +16,7 @@ function _getContent(_name) {
           "CRUD",
           "Node",
           "JS",
-          "Swagger"
+          "Swagger",
           "Express",
           "Mongoose",
           "REST"

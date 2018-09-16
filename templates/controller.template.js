@@ -71,14 +71,11 @@ function _getContent(_name) {
         if(_req.query.sort){
             query.sort(_req.query.sort.split(',').join(' '))
         }
-        query.exec(_handler);
-        function _handler(_err,_data){
-            if(_err){
-                logger.error(_err);
-                _res.status(400).json({code:_err.code,message:_err.message});
-            }else{
-                res.status(200).json(data);
-            }
+        query.exec().then(data => {
+            res.status(200).json(data);
+        }).catch(err => {
+            logger.error(err);
+            _res.status(400).json({code:err.code, message:err.message});
         });
     }
 
