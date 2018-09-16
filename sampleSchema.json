@@ -22,7 +22,7 @@
             "city": "String",
             "state": "String",
             "country": "String",
-            "pincode": "String"
+            "pincode": "Number"
         }
     }
 }

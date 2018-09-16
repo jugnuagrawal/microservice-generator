@@ -1,11 +1,6 @@
 # Microservice Generator
 
-This library creates a microservice based on express js and mongoose js which can do CRUD operation over HTTP using RESTful web service.
-
-
-### Setup
-
-Microservice Generator requires [Node.js](https://nodejs.org/) v4+ to run.
+This tool to generate microservice based on swagger, express js and mongoose js which can do CRUD operation using RESTful web service.
 
 
 ### Use like a node module
@@ -20,16 +15,33 @@ $ npm install --save microservice-generator
 const generator = require('microservice-generator');
 
 var schema = {
-    "name":"Hello World",
-    "api":"/hello",
-    "port":3000,
-    "database":"myApp",
-    "schema":{
-        "from":{
-            "type":"String",
-            "required":true
+    "name": "User Details",
+    "api": "/user",
+    "port": 3000,
+    "database": "users",
+    "schema": {
+        "name": "String",
+        "email": {
+            "type": "String",
+            "unique": true,
+            "required": true
         },
-        "message":"String"
+        "password": "String",
+        "contactNos": [
+            {
+                "code": "String",
+                "number": "Number"
+            }
+        ],
+        "gender": "String",
+        "address": {
+            "houseNo": "String",
+            "street": "String",
+            "city": "String",
+            "state": "String",
+            "country": "String",
+            "pincode": "Number"
+        }
     }
 }
 
@@ -55,10 +67,10 @@ Enter the full path of your schema file [sampleSchema.json] : /usr/home/workspac
 
 ```javascript
 {
-    "name":"user", //Required. Name of this microservice
+    "name":"User Details", //Required. Name of this microservice
     "api":"/user", //Optional. API URL of this microservice
-    "port":9494, //Optional. Port number in which this microservice will be running
-    "database":"myApp", //Optional. Name of database in which this microservice will create it's collection
+    "port":3000, //Optional. Port number in which this microservice will be running
+    "database":"users", //Optional. Name of database in which this microservice will create it's collection
     "schema":{
         //mongoose schema
     }
@@ -67,13 +79,28 @@ Enter the full path of your schema file [sampleSchema.json] : /usr/home/workspac
 - Example mongoose schema
 ```javascript
 {
-    "name":"String",
-    "email":{
-        "type":"String",
-        "unique":true,
-        "required":true
+    "name": "String",
+    "email": {
+        "type": "String",
+        "unique": true,
+        "required": true
     },
-    "password":"String"
+    "password": "String",
+    "contactNos": [
+        {
+            "code": "String",
+            "number": "Number"
+        }
+    ],
+    "gender": "String",
+    "address": {
+        "houseNo": "String",
+        "street": "String",
+        "city": "String",
+        "state": "String",
+        "country": "String",
+        "pincode": "Number"
+    }
 }
 ```
 - [More info on mongoose schema](http://mongoosejs.com/docs/guide.html)
@@ -84,6 +111,3 @@ License
 ----
 
 MIT
-
-
-**Open Source, Hell Yeah!**
