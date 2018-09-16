@@ -28,5 +28,8 @@
   "bugs": {
     "url": "https://github.com/jugnuagrawal/microservice-generator/issues"
   },
-  "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme"
+  "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme",
+  "dependencies": {
+    "swagger-express-mw": "^0.7.0"
+  }
 }
