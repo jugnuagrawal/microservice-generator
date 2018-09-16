@@ -53,7 +53,7 @@ const showParameters = [
 ];
 
 function getDefinition(schema) {
-    var definition = { type: 'object', properties: {} };
+    var definition = { properties: {} };
     Object.keys(schema).forEach(key => {
         if (!Array.isArray(schema[key]) && (schema[key] == 'String'
             || schema[key] == 'Number'
@@ -126,7 +126,7 @@ function getContent(config) {
     };
     var name = toCamelCase(config.name);
     swagger.definitions[`${name}_create`] = definition;
-    swagger.paths["/v1" + basePath + '/count'] = {
+    swagger.paths[basePath + '/count'] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
             description: `Retrieve a list of ${name}`,
@@ -147,7 +147,7 @@ function getContent(config) {
             }
         }
     };
-    swagger.paths["/v1" + basePath] = {
+    swagger.paths[basePath] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
             description: `Retrieve a list of ${name}`,
@@ -181,7 +181,7 @@ function getContent(config) {
             }
         }
     };
-    swagger.paths["/v1" + basePath + "/{id}"] = {
+    swagger.paths[basePath + "/{id}"] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
             description: `Retrieve a list of ${name}`,

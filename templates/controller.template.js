@@ -5,13 +5,10 @@ module.exports.getContent = _getContent;
 function _getContent(_name) {
     return `
     const mongoose = require('mongoose');
-    const utils = require('../utils/utils');
     const schemaJSON = require('../schemas/${_name}.schema');
     const schema = new mongoose.Schema(schemaJSON);
     const log4js = require('log4js');
     const logger = log4js.getLogger('Controller');
-    schema.add({_id:{type:"String"}});
-    schema.pre('save',utils.getNextId('${_name}'));
 
     const model = mongoose.model('${_name}',schema);
 
@@ -31,7 +28,7 @@ function _getContent(_name) {
         });
     }
 
-    function _retrive(_req,_res){
+    function _retrive(req,res){
         var query = null;
         var skip = 0;
         var count = 10;
@@ -68,14 +65,14 @@ function _getContent(_name) {
         if(req.query.select){
             query.select(req.query.select.split(',').join(' '));
         }
-        if(_req.query.sort){
-            query.sort(_req.query.sort.split(',').join(' '))
+        if(req.query.sort){
+            query.sort(req.query.sort.split(',').join(' '))
         }
         query.exec().then(data => {
             res.status(200).json(data);
         }).catch(err => {
             logger.error(err);
-            _res.status(400).json({code:err.code, message:err.message});
+            res.status(400).json({code:err.code, message:err.message});
         });
     }
 

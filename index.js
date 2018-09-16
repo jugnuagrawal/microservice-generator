@@ -43,9 +43,9 @@ function createProject(_data) {
     if (!fs.existsSync(path.join(_path, 'api', 'messages'))) {
         fs.mkdirSync(path.join(_path, 'api', 'messages'));
     }
-    if (!fs.existsSync(path.join(_path, 'api', 'utils'))) {
-        fs.mkdirSync(path.join(_path, 'api', 'utils'));
-    }
+    // if (!fs.existsSync(path.join(_path, 'api', 'utils'))) {
+    //     fs.mkdirSync(path.join(_path, 'api', 'utils'));
+    // }
     if (!fs.existsSync(path.join(_path, 'apidoc'))) {
         fs.mkdirSync(path.join(_path, 'apidoc'));
     }
@@ -67,8 +67,8 @@ function createProject(_data) {
     console.log(_name + '.swagger.yaml created!');
 
     //required once execution
-    fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'api', 'utils', 'utils.js'))
-    console.log('utils.js created!');
+    // fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'api', 'utils', 'utils.js'))
+    // console.log('utils.js created!');
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')

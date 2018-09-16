@@ -41,6 +41,12 @@
         url: "swagger",
         dom_id: '#swagger-ui',
         deepLinking: true,
+        requestInterceptor:function(req){
+          req.headers = {
+            'content-type':'application/json'
+          };
+          return req;
+        },
         presets: [
           SwaggerUIBundle.presets.apis,
           SwaggerUIStandalonePreset
