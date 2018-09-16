@@ -4,51 +4,45 @@ const getParameters = [
         name: "page",
         in: "query",
         type: "integer",
-        description: "Page number of the request"
+        description: "Page number to get the next set of documents"
     },
     {
         name: "count",
         in: "query",
         type: "integer",
-        description: "Number of categories per page"
+        description: "Number of documents in each request"
     },
     {
         name: "filter",
         in: "query",
         type: "string",
-        description: "Filter categories based on certain fields"
+        description: "Filter documents based on certain fields"
     },
     {
         name: "select",
         in: "query",
         type: "string",
-        description: "Comma seperated fields to be displayed"
+        description: "Select fields to be displayed in documents"
     },
     {
         name: "sort",
         in: "query",
         type: "string",
-        description: "sort parameter"
+        description: "Sort documents based on field"
     }
 ];
 const showParameters = [
     {
-        name: "filter",
-        in: "query",
-        type: "string",
-        description: "Filter categories based on certain fields"
-    },
-    {
         name: "select",
         in: "query",
         type: "string",
-        description: "Comma seperated fields to be displayed"
+        description: "Select fields to be displayed in document"
     }, {
         name: "id",
         in: "path",
         type: "string",
         required: true,
-        description: "Id of the object to be updated",
+        description: "Id of the document",
     }
 ];
 
@@ -129,20 +123,19 @@ function getContent(config) {
     swagger.paths[basePath + '/count'] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
-            description: `Retrieve a list of ${name}`,
+            description: `Counts the number of ${name} documents`,
             operationId: `${methodName.count}`,
             parameters: [
                 {
                     name: "filter",
                     in: "query",
                     type: "string",
-                    description: "Filter categories based on certain fields"
+                    description: "Filter documents based on certain fields"
                 }
             ],
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description: "Number of records" },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
                 "500": { description: "Internal server error" }
             }
         }
@@ -150,33 +143,31 @@ function getContent(config) {
     swagger.paths[basePath] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
-            description: `Retrieve a list of ${name}`,
+            description: `Retrieve a array of ${name} documents`,
             operationId: `${methodName.retrive}`,
             parameters: getParameters,
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description: `Array of ${name} documents` },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
                 "500": { description: "Internal server error" }
             }
         },
         "post": {
-            description: `Create a new ${name}`,
+            description: `Create a new ${name} document`,
             operationId: `${methodName.create}`,
             parameters: [
                 {
                     name: "data",
                     in: "body",
-                    description: `Payload to create a ${name}`,
+                    description: `Payload to create a ${name} document`,
                     schema: {
                         $ref: `#/definitions/${name}_create`
                     }
                 }
             ],
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description: `${name} document with generated ID` },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
                 "500": { description: "Internal server error" }
             }
         }
@@ -184,24 +175,24 @@ function getContent(config) {
     swagger.paths[basePath + "/{id}"] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
-            description: `Retrieve a list of ${name}`,
+            description: `Retrieve a single record of ${name}`,
             operationId: `${methodName.retrive}`,
             parameters: showParameters,
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description: `${name} document for the ID` },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
+                "404": { description: "No document found" },
                 "500": { description: "Internal server error" }
             }
         },
         "put": {
-            description: `Create a new ${name}`,
+            description: `Update a ${name} document`,
             operationId: `${methodName.update}`,
             parameters: [
                 {
                     name: "data",
                     in: "body",
-                    description: `Payload to update a ${name}`,
+                    description: `Payload to update a ${name} document`,
                     schema: {
                         $ref: `#/definitions/${name}_create`
                     }
@@ -210,13 +201,13 @@ function getContent(config) {
                     in: "path",
                     type: "string",
                     required: true,
-                    description: `Id of the ${name} to be updated`,
+                    description: `Id of the ${name} document to be updated`,
                 }
             ],
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description:  `${name} document after update` },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
+                "404": { description: "No document found" },
                 "500": { description: "Internal server error" }
             }
         },
@@ -229,13 +220,13 @@ function getContent(config) {
                     in: "path",
                     type: "string",
                     required: true,
-                    description: `Id of the ${name} to be updated`,
+                    description: `Id of the ${name} document to be deleted`,
                 }
             ],
             responses: {
-                "200": { description: "List of the entites" },
+                "200": { description: `Deleted ${name} document` },
                 "400": { description: "Bad parameters" },
-                "404": { description: "No categories to list with the given parameter set." },
+                "404": { description: "No document found" },
                 "500": { description: "Internal server error" }
             }
         }
