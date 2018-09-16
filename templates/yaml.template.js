@@ -54,14 +54,14 @@ function getDefinition(schema) {
             || schema[key] == 'Boolean'
             || schema[key] == 'Date')) {
             definition.properties[key] = {};
-            definition.properties[key]['type'] = schema[key].toLowerCase();
+            definition.properties[key]['type'] = [schema[key].toLowerCase(), 'null'];
         } else if (typeof schema[key] === 'object' && !Array.isArray(schema[key])) {
             if (schema[key]['type'] && (schema[key]['type'] == 'String'
                 || schema[key]['type'] == 'Number'
                 || schema[key]['type'] == 'Boolean'
                 || schema[key]['type'] == 'Date')) {
                 definition.properties[key] = {};
-                definition.properties[key]['type'] = schema[key]['type'].toLowerCase();
+                definition.properties[key]['type'] = [schema[key]['type'].toLowerCase(), 'null'];
             } else {
                 definition.properties[key] = getDefinition(schema[key]);
             }
@@ -73,7 +73,7 @@ function getDefinition(schema) {
             if (typeof schema[key][0] == 'object') {
                 definition.properties[key]['items'] = getDefinition(schema[key][0]);
             } else {
-                definition.properties[key]['items']['type'] = schema[key][0].toLowerCase();
+                definition.properties[key]['items']['type'] = [schema[key][0].toLowerCase(), 'null'];
             }
         }
     });
@@ -205,7 +205,7 @@ function getContent(config) {
                 }
             ],
             responses: {
-                "200": { description:  `${name} document after update` },
+                "200": { description: `${name} document after update` },
                 "400": { description: "Bad parameters" },
                 "404": { description: "No document found" },
                 "500": { description: "Internal server error" }
