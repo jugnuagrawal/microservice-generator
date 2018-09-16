@@ -29,17 +29,20 @@ function _getContent(_name, _api, _database, _port) {
     app.use(bodyParser.json());
     
     //logging each request
-    app.use(function(req,res,next){
+    app.use((req,res,next)=>{
         logger.info(req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,req.path,req.params,req.query,req.body);
+        res.setHeader('Access-Control-Allow-Origin','*');
+        res.setHeader('Access-Control-Allow-Methods','*');
+        res.setHeader('Access-Control-Allow-Headers','*');
         next();
     });
     
     //checking mongodb is available
-    app.use(function(req,res,next){
+    app.use((req,res,next)=>{
         if (mongoose.connections.length == 0 || mongoose.connections[0].readyState != 1) {
-            mongoose.connect(mongo_url, function (_err) {
-                if (_err) {
-                    logger.error(_err);
+            mongoose.connect(mongo_url, (err)=>{
+                if (err) {
+                    logger.error(err);
                     res.status(500).json({message:messages.error['500']});
                 } else {
                     next();
@@ -51,7 +54,7 @@ function _getContent(_name, _api, _database, _port) {
     });
     
     // Uncomment and right your own business logic to do Authentication check
-    /*app.use(function(req,res,next){
+    /*app.use((req,res,next)=>{
         if(req.headers.authorization){
             next();
         }else{
@@ -60,15 +63,15 @@ function _getContent(_name, _api, _database, _port) {
     });*/
 
     app.use(express.static(path.join(__dirname, 'apidoc')));
-    app.get('/', function (req, res) {
+    app.get('/', (req, res) => {
         res.sendFile(path.join(__dirname, 'apidoc', 'index.html'));
     });
-    app.get('/swagger', function (req, res) {
+    app.get('/swagger', (req, res) => {
         const content = fs.readFileSync(path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml'), 'utf8');
         res.json(jsyaml.safeLoad(content, 'utf8'));
     });
     // //Invalid routes handle
-    // app.use('*',function(req,res){
+    // app.use('*', (req,res) => {
     //     res.status(404).json({message:messages.error['404']});
     // });
     
@@ -76,7 +79,7 @@ function _getContent(_name, _api, _database, _port) {
     SwaggerExpress.create({
         appRoot: __dirname,
         swaggerFile: path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml')
-    }, function (err, swaggerExpress) {
+    }, (err, swaggerExpress) => {
         if (err) { throw err; }
         swaggerExpress.register(app);
         app.listen(port, (err) => {

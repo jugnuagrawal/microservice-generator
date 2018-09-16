@@ -1,7 +1,7 @@
 {
   "name": "microservice-generator",
-  "version": "1.0.4",
-  "description": "A swagger express mongoose CRUD generator.",
+  "version": "1.1.0",
+  "description": "A node js library to generate a microservice capable of doing CRUD operation over REST API for the given schema structure.",
   "main": "index.js",
   "scripts": {
     "start": "node cli"
@@ -33,5 +33,9 @@
   "dependencies": {
     "fs-extra": "^7.0.0",
     "js-yaml": "^3.12.0"
+  },
+  "preferGlobal": true,
+  "bin": {
+    "misgen": "./cli.js"
   }
 }

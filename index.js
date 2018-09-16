@@ -19,7 +19,13 @@ String.prototype.toPascalCase = function () {
 function createProject(_data) {
     var _name = _data.name.toCamelCase();
     var _api = _data.api ? _data.api : _name;
-    var _path = path.join('../', _name);
+    var _path = path.join(_name);
+    if (_data.filePath) {
+        var segments = _data.filePath.split('/');
+        segments.pop();
+        segments.push(_name);
+        _path = segments.join('/');
+    }
     var _database = _data.database ? _data.database : _name;
     var _port = _data.port ? _data.port : 3000;
     if (!fs.existsSync(_path)) {

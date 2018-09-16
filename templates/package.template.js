@@ -2,8 +2,8 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_name){
-    return `
+function _getContent(_name) {
+  return `
     {
         "name": "${_name}",
         "version": "1.0.0",
