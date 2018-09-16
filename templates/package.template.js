@@ -7,24 +7,27 @@ function _getContent(_name){
     {
         "name": "${_name}",
         "version": "1.0.0",
-        "description": "A node js project cretaed with code generator tool to do CRUD operation over REST API for the given schema structure.",
+        "description": "A swagger express mongoose CRUD api",
         "main": "app.js",
         "scripts": {
+          "start":"node app.js"
         },
         "keywords": [
           "CRUD",
           "Node",
           "JS",
+          "Swagger"
           "Express",
           "Mongoose",
           "REST"
         ],
         "dependencies": {
           "body-parser": "^1.18.2",
-          "ejs": "^2.5.7",
           "express": "^4.16.2",
           "log4js": "^2.5.2",
-          "mongoose": "^5.0.3"
+          "mongoose": "^5.0.3",
+          "js-yaml": "^3.12.0",
+          "swagger-express-mw": "^0.7.0"
         },
         "author": "Jugnu Agrawal",
         "license": "ISC"

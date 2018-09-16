@@ -31,7 +31,7 @@ function _getContent(_name){
         });
     }
 
-    function _read(_req,_res){
+    function _retrive(_req,_res){
         var query = null;
         var skip = 0;
         var count = 10;
@@ -67,6 +67,9 @@ function _getContent(_name){
         }
         if(_req.query.select){
             query.select(_req.query.select.split(',').join(' '));
+        }
+        if(_req.query.sort){
+            query.sort(_req.query.sort.split(',').join(' '))
         }
         query.exec(_handler);
         function _handler(_err,_data){
@@ -120,7 +123,7 @@ function _getContent(_name){
     //Exporting CRUD controllers
     module.exports = {
         create:_create,
-        read:_read,
+        retrive:_retrive,
         update:_update,
         delete:_delete,
         count:_count

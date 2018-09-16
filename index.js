@@ -1,15 +1,19 @@
 const path = require('path');
 const fs = require('fs');
+const fse = require('fs-extra');
 const package = require('./templates/package.template');
 const app = require('./templates/app.template');
 const controller = require('./templates/controller.template');
+const indexController = require('./templates/index.controller');
+const swagger = require('./templates/yaml.template');
 
 
 String.prototype.toCamelCase = function () {
-    return this
-        .replace(/\s(.)/g, function ($1) { return $1.toUpperCase(); })
-        .replace(/\s/g, '')
-        .replace(/^(.)/, function ($1) { return $1.toLowerCase(); });
+    return this.split(' ').map((e, i) => i === 0 ? e : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
+}
+
+String.prototype.toPascalCase = function () {
+    return this.split(' ').map(e => e[0].toUpperCase() + e.substr(1, e.length)).join('');
 }
 
 function createProject(_data) {
@@ -21,34 +25,44 @@ function createProject(_data) {
     if (!fs.existsSync(_path)) {
         fs.mkdirSync(_path);
     }
-    if (!fs.existsSync(path.join(_path, 'controllers'))) {
-        fs.mkdirSync(path.join(_path, 'controllers'));
+    if (!fs.existsSync(path.join(_path, 'api'))) {
+        fs.mkdirSync(path.join(_path, 'api'));
     }
-    if (!fs.existsSync(path.join(_path, 'schemas'))) {
-        fs.mkdirSync(path.join(_path, 'schemas'));
+    if (!fs.existsSync(path.join(_path, 'api', 'controllers'))) {
+        fs.mkdirSync(path.join(_path, 'api', 'controllers'));
     }
-    if (!fs.existsSync(path.join(_path, 'messages'))) {
-        fs.mkdirSync(path.join(_path, 'messages'));
+    if (!fs.existsSync(path.join(_path, 'api', 'schemas'))) {
+        fs.mkdirSync(path.join(_path, 'api', 'schemas'));
     }
-    if (!fs.existsSync(path.join(_path, 'utils'))) {
-        fs.mkdirSync(path.join(_path, 'utils'));
+    if (!fs.existsSync(path.join(_path, 'api', 'messages'))) {
+        fs.mkdirSync(path.join(_path, 'api', 'messages'));
+    }
+    if (!fs.existsSync(path.join(_path, 'api', 'utils'))) {
+        fs.mkdirSync(path.join(_path, 'api', 'utils'));
     }
     if (!fs.existsSync(path.join(_path, 'apidoc'))) {
         fs.mkdirSync(path.join(_path, 'apidoc'));
     }
-    
-    fs.writeFileSync(path.join(_path, 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
+    if (!fs.existsSync(path.join(_path, 'api', 'swagger'))) {
+        fs.mkdirSync(path.join(_path, 'api', 'swagger'));
+    }
+
+    fse.copySync(path.join(__dirname, 'apidoc'), path.join(__dirname, _path, 'apidoc'));
+
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
     console.log(_name + '.controller.js created!');
-    fs.writeFileSync(path.join(_path, 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_name), 'utf-8')
+    console.log('index.js created!');
+    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
     console.log(_name + '.schema.json created!');
-    fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'messages', _name + '.messages.json'));
+    fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'api', 'messages', _name + '.messages.json'));
     console.log(_name + '.messages.json created!');
+    fs.writeFileSync(path.join(_path, 'api', 'swagger', _name + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
+    console.log(_name + '.swagger.yaml created!');
 
     //required once execution
-    fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'utils', 'utils.js'))
+    fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'api', 'utils', 'utils.js'))
     console.log('utils.js created!');
-    fs.copyFileSync(path.join(__dirname, 'templates/index.ejs'), path.join(_path, 'apidoc', 'index.ejs'))
-    console.log('index.ejs created!');
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')

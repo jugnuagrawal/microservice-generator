@@ -2,15 +2,17 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_name,_api,_database,_port){
-    return `const path = require('path');
+function _getContent(_name, _api, _database, _port) {
+    return `
+    const fs = require('fs');
+    const path = require('path');
     const express = require('express');
     const bodyParser = require('body-parser');
     const log4js = require('log4js');
     const mongoose = require('mongoose');
-    const controller = require('./controllers/${_name}.controller');
-    const messages = require('./messages/${_name}.messages');
-    const schema = require('./schemas/${_name}.schema');
+    const SwaggerExpress = require("swagger-express-mw");
+    const jsyaml = require('js-yaml');
+    const messages = require('./api/messages/${_name}.messages');
     const logger = log4js.getLogger('Server');
     const app = express();
     const host = process.env.HOST || 'localhost';
@@ -27,67 +29,64 @@ function _getContent(_name,_api,_database,_port){
     app.use(bodyParser.json());
     
     //logging each request
-    app.use(function(_req,_res,_next){
-        logger.info(_req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,_req.path,_req.params,_req.query,_req.body);
-        _next();
+    app.use(function(req,res,next){
+        logger.info(req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,req.path,req.params,req.query,req.body);
+        next();
     });
     
     //checking mongodb is available
-    app.use(function(_req,_res,_next){
+    app.use(function(req,res,next){
         if (mongoose.connections.length == 0 || mongoose.connections[0].readyState != 1) {
             mongoose.connect(mongo_url, function (_err) {
                 if (_err) {
                     logger.error(_err);
-                    _res.status(500).json({message:messages.error['500']});
+                    res.status(500).json({message:messages.error['500']});
                 } else {
-                    _next();
+                    next();
                 }
             });
         }else{
-            _next();
+            next();
         }
     });
     
     // Uncomment and right your own business logic to do Authentication check
-    /*app.use(function(_req,_res,_next){
-        if(_req.headers.authorization){
+    /*app.use(function(req,res,next){
+        if(req.headers.authorization){
             next();
         }else{
-            _res.status(401).json({message:messages.error['401']});
+            res.status(401).json({message:messages.error['401']});
         }
     });*/
-    
-    //CRUD routes
-    app.get('${_api}/count',controller.count);
-    app.get('${_api}',controller.read);
-    app.post('${_api}',controller.create);
-    app.get('${path.join(_api,':id')}',controller.read);
-    app.put('${path.join(_api,':id')}',controller.update);
-    app.delete('${path.join(_api,':id')}',controller.delete);
-    
 
-    app.set('view engine', 'ejs');
-    app.set('views', path.join(__dirname,'apidoc'));
-    app.get('/apidoc',function(_req,_res){
-        _res.render('index',{
-            host:host,
-            port:port,
-            name:'',
-            api:'${_api}',
-            schema:schema
+    app.use(express.static(path.join(__dirname, 'apidoc')));
+    app.get('/', function (req, res) {
+        res.sendFile(path.join(__dirname, 'apidoc', 'index.html'));
+    });
+    app.get('/swagger', function (req, res) {
+        const content = fs.readFileSync(path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml'), 'utf8');
+        res.json(jsyaml.safeLoad(content, 'utf8'));
+    });
+    // //Invalid routes handle
+    // app.use('*',function(req,res){
+    //     res.status(404).json({message:messages.error['404']});
+    // });
+    
+    
+    SwaggerExpress.create({
+        appRoot: __dirname,
+        swaggerFile: path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml')
+    }, function (err, swaggerExpress) {
+        if (err) { throw err; }
+        swaggerExpress.register(app);
+        app.listen(port, (err) => {
+            if (!err) {
+                logger.info("Server started on port " + port);
+            }
+            else
+                logger.error(err);
         });
     });
-
-    //Invalid routes handle
-    app.use('*',function(_req,_res){
-        _res.status(404).json({message:messages.error['404']});
-    });
-    
-    
-    //Starting server
-    app.listen(port,host,function(){
-        console.log('Server is listening at ','http://'+host+':'+port+'/');
-        console.log('API Documentation at ','http://'+host+':'+port+'/apidoc');
-    });`;
+    `;
 
 }

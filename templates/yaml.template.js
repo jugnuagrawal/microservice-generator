@@ -1,3 +1,4 @@
+const jsyaml = require('js-yaml');
 const getParameters = [
     {
         name: "page",
@@ -89,11 +90,11 @@ function getMethodNames(config) {
     var name = toCamelCase(config.name);
     var obj = {};
     obj.create = `${name}Create`;
-    obj.list = `${name}List`;
     obj.retrive = `${name}Retrive`;
     obj.update = `${name}Update`;
     obj.delete = `${name}Delete`;
-    obj.controller = "controller";
+    obj.count = `${name}Count`;
+    obj.controller = `index`;
     return obj;
 }
 
@@ -105,18 +106,18 @@ function toPascalCase(name) {
     return name.split(' ').map(e => e[0].toUpperCase() + e.substr(1, e.length)).join('');
 }
 
-function generateYaml(config) {
+function getContent(config) {
     var methodName = getMethodNames(config);
     var definition = getDefinition(config.schema);
     var basePath = config.api ? toCamelCase(config.api) : '/' + toCamelCase(config.name);
     var swagger = {
         swagger: "2.0",
         info: {
-            version: "1.0.0",
+            version: "1.0",
             title: config.name + " API"
         },
         host: "localhost:" + (config.port || 3000),
-        basePath: basePath,
+        basePath: '/',
         schemes: ["http"],
         consumes: ["multipart/form-data", "application/json"],
         produces: ["application/json", "text/plain"],
@@ -125,11 +126,32 @@ function generateYaml(config) {
     };
     var name = toCamelCase(config.name);
     swagger.definitions[`${name}_create`] = definition;
-    swagger.paths["/v1/" + name] = {
+    swagger.paths["/v1" + basePath + '/count'] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
             description: `Retrieve a list of ${name}`,
-            operationId: `${methodName.list}`,
+            operationId: `${methodName.count}`,
+            parameters: [
+                {
+                    name: "filter",
+                    in: "query",
+                    type: "string",
+                    description: "Filter categories based on certain fields"
+                }
+            ],
+            responses: {
+                "200": { description: "List of the entites" },
+                "400": { description: "Bad parameters" },
+                "404": { description: "No categories to list with the given parameter set." },
+                "500": { description: "Internal server error" }
+            }
+        }
+    };
+    swagger.paths["/v1" + basePath] = {
+        "x-swagger-router-controller": `${methodName.controller}`,
+        "get": {
+            description: `Retrieve a list of ${name}`,
+            operationId: `${methodName.retrive}`,
             parameters: getParameters,
             responses: {
                 "200": { description: "List of the entites" },
@@ -159,7 +181,7 @@ function generateYaml(config) {
             }
         }
     };
-    swagger.paths["/v1/" + name + "/{id}"] = {
+    swagger.paths["/v1" + basePath + "/{id}"] = {
         "x-swagger-router-controller": `${methodName.controller}`,
         "get": {
             description: `Retrieve a list of ${name}`,
@@ -218,7 +240,7 @@ function generateYaml(config) {
             }
         }
     };
-    return swagger;
+    return jsyaml.dump(swagger);
 }
 
-module.exports.generateYaml = generateYaml;
+module.exports.getContent = getContent;

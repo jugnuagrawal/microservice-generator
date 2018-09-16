@@ -1,7 +1,7 @@
 {
   "name": "microservice-generator",
   "version": "1.0.4",
-  "description": "A node js library to generate a microservice capable of doing CRUD operation over REST API for the given schema structure.",
+  "description": "A swagger express mongoose CRUD generator.",
   "main": "index.js",
   "scripts": {
     "start": "node cli"
@@ -16,6 +16,7 @@
     "Generator",
     "Node",
     "JS",
+    "Swagger",
     "Express",
     "Mongoose",
     "REST"
@@ -30,6 +31,7 @@
   },
   "homepage": "https://github.com/jugnuagrawal/microservice-generator#readme",
   "dependencies": {
-    "swagger-express-mw": "^0.7.0"
+    "fs-extra": "^7.0.0",
+    "js-yaml": "^3.12.0"
   }
 }
