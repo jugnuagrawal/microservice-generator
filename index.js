@@ -9,7 +9,7 @@ const swagger = require('./templates/yaml.template');
 
 
 String.prototype.toCamelCase = function () {
-    return this.split(' ').map((e, i) => i === 0 ? e : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
+    return this.split(' ').map((e, i) => i === 0 ? e.toLowerCase() : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
 }
 
 String.prototype.toPascalCase = function () {
@@ -59,7 +59,7 @@ function createProject(_data) {
     console.log(_name + '.controller.js created!');
     fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_name), 'utf-8')
     console.log('index.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8')
     console.log(_name + '.schema.json created!');
     fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'api', 'messages', _name + '.messages.json'));
     console.log(_name + '.messages.json created!');

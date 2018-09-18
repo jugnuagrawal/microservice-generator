@@ -10,7 +10,7 @@ const rl = readline.createInterface({
 });
 
 function ask() {
-    rl.question('Enter the full path of your schema file [sampleSchema.json] : ', (_fileName) => {
+    rl.question('Location of your schema file [sampleSchema.json] : ', (_fileName) => {
         if (!_fileName.trim()) {
             console.log('No file name entered, using sampleSchema.json');
             rl.close();

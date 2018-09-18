@@ -1,5 +1,5 @@
 const jsyaml = require('js-yaml');
-const getParameters = [
+const retriveAllParameter = [
     {
         name: "page",
         in: "query",
@@ -31,7 +31,7 @@ const getParameters = [
         description: "Sort documents based on field"
     }
 ];
-const showParameters = [
+const retriveParameter = [
     {
         name: "select",
         in: "query",
@@ -46,7 +46,7 @@ const showParameters = [
     }
 ];
 
-function getDefinition(schema) {
+function getSwaggerSchema(schema) {
     var definition = { properties: {} };
     Object.keys(schema).forEach(key => {
         if (!Array.isArray(schema[key]) && (schema[key] == 'String'
@@ -71,7 +71,7 @@ function getDefinition(schema) {
                     definition.properties[key]['type'] = [schema[key]['type'].toLowerCase(), 'null'];
                 }
             } else {
-                definition.properties[key] = getDefinition(schema[key]);
+                definition.properties[key] = getSwaggerSchema(schema[key]);
             }
         } else {
             definition.properties[key] = {
@@ -79,7 +79,7 @@ function getDefinition(schema) {
                 items: {}
             };
             if (typeof schema[key][0] == 'object') {
-                definition.properties[key]['items'] = getDefinition(schema[key][0]);
+                definition.properties[key]['items'] = getSwaggerSchema(schema[key][0]);
             } else {
                 if (schema[key][0] == 'Date') {
                     definition.properties[key]['items']['type'] = ['string', 'null'];
@@ -92,29 +92,12 @@ function getDefinition(schema) {
     return definition;
 }
 
-function getMethodNames(config) {
-    var name = toCamelCase(config.name);
-    var obj = {};
-    obj.create = `${name}Create`;
-    obj.retrive = `${name}Retrive`;
-    obj.update = `${name}Update`;
-    obj.delete = `${name}Delete`;
-    obj.count = `${name}Count`;
-    obj.controller = `index`;
-    return obj;
-}
-
 function toCamelCase(name) {
-    return name.split(' ').map((e, i) => i === 0 ? e : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
-}
-
-function toPascalCase(name) {
-    return name.split(' ').map(e => e[0].toUpperCase() + e.substr(1, e.length)).join('');
+    return name.split(' ').map((e, i) => i === 0 ? e.toLowerCase() : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
 }
 
 function getContent(config) {
-    var methodName = getMethodNames(config);
-    var definition = getDefinition(config.schema);
+    var definition = getSwaggerSchema(config.schema);
     var basePath = config.api ? toCamelCase(config.api) : '/' + toCamelCase(config.name);
     var swagger = {
         swagger: "2.0",
@@ -133,10 +116,10 @@ function getContent(config) {
     var name = toCamelCase(config.name);
     swagger.definitions[`${name}_create`] = definition;
     swagger.paths[basePath + '/count'] = {
-        "x-swagger-router-controller": `${methodName.controller}`,
+        "x-swagger-router-controller": 'index',
         "get": {
             description: `Counts the number of ${name} documents`,
-            operationId: `${methodName.count}`,
+            operationId: `${name}Count`,
             parameters: [
                 {
                     name: "filter",
@@ -153,11 +136,11 @@ function getContent(config) {
         }
     };
     swagger.paths[basePath] = {
-        "x-swagger-router-controller": `${methodName.controller}`,
+        "x-swagger-router-controller": 'index',
         "get": {
             description: `Retrieve a array of ${name} documents`,
-            operationId: `${methodName.retrive}`,
-            parameters: getParameters,
+            operationId: `${name}RetriveAll`,
+            parameters: retriveAllParameter,
             responses: {
                 "200": { description: `Array of ${name} documents` },
                 "400": { description: "Bad parameters" },
@@ -166,7 +149,7 @@ function getContent(config) {
         },
         "post": {
             description: `Create a new ${name} document`,
-            operationId: `${methodName.create}`,
+            operationId: `${name}Create`,
             parameters: [
                 {
                     name: "data",
@@ -185,11 +168,11 @@ function getContent(config) {
         }
     };
     swagger.paths[basePath + "/{id}"] = {
-        "x-swagger-router-controller": `${methodName.controller}`,
+        "x-swagger-router-controller": 'index',
         "get": {
             description: `Retrieve a single record of ${name}`,
-            operationId: `${methodName.retrive}`,
-            parameters: showParameters,
+            operationId: `${name}Retrive`,
+            parameters: retriveParameter,
             responses: {
                 "200": { description: `${name} document for the ID` },
                 "400": { description: "Bad parameters" },
@@ -199,7 +182,7 @@ function getContent(config) {
         },
         "put": {
             description: `Update a ${name} document`,
-            operationId: `${methodName.update}`,
+            operationId: `${name}Update`,
             parameters: [
                 {
                     name: "data",
@@ -225,7 +208,7 @@ function getContent(config) {
         },
         "delete": {
             description: `Create a new ${name}`,
-            operationId: `${methodName.delete}`,
+            operationId: `${name}Delete`,
             parameters: [
                 {
                     name: "id",
