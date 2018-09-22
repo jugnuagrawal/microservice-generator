@@ -3,16 +3,19 @@ function _getContent(_name) {
     return `
 module.exports = {
     "get": {
+        "404": "Document not found",
         "500": "We have done somthing wrong, we are looking into it."
     },
     "post": {
         "500": "We have done somthing wrong, we are looking into it."
     },
     "put": {
+        "400": "Bad Parameters",
         "404": "Document not found",
         "500": "We have done somthing wrong, we are looking into it."
     },
     "delete": {
+        "400": "Bad Parameters",
         "404": "Document not found",
         "500": "We have done somthing wrong, we are looking into it."
     },

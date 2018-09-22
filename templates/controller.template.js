@@ -39,7 +39,16 @@ function _retrive(req, res) {
     if (req.query.page && (+req.query.page) > 0) {
         skip = count * ((+req.query.page) - 1);
     }
-    if (req.swagger.params.id.value) {
+    if (req.query.filter) {
+        try {
+            filter = JSON.parse(req.query.filter);
+        } catch (err) {
+            filter = {};
+            logger.error(err);
+        }
+        model.where(req.query.filter);
+    }
+    if (req.swagger.params.id && req.swagger.params.id.value) {
         query = model.findById(req.swagger.params.id.value);
     } else {
         query = model.find(filter);
@@ -53,7 +62,11 @@ function _retrive(req, res) {
         query.sort(req.query.sort.split(',').join(' '))
     }
     query.exec().then(data => {
-        res.status(200).json(data);
+        if (req.swagger.params.id && req.swagger.params.id.value && !data) {
+            res.status(404).json({ message: messages.get['404'] });
+        } else {
+            res.status(200).json(data);
+        }
     }).catch(err => {
         logger.error(err);
         res.status(500).json({ message: messages.get['500'] });
@@ -61,6 +74,10 @@ function _retrive(req, res) {
 }
 
 function _update(req, res) {
+    if(!req.swagger.params.id){
+        res.status(400).json({ message: messages.put['400'] });
+        return;
+    }
     model.findById(req.swagger.params.id.value).then(doc => {
         if (!doc) {
             res.status(404).json({ message: messages.put['404'] });
@@ -80,6 +97,10 @@ function _update(req, res) {
 }
 
 function _delete(req, res) {
+    if(!req.swagger.params.id){
+        res.status(400).json({ message: messages.delete['400'] });
+        return;
+    }
     model.findById(req.swagger.params.id.value).then(doc => {
         if (!doc) {
             res.status(404).json({ message: messages.delete['404'] });
@@ -99,6 +120,12 @@ function _delete(req, res) {
 
 function _count(req, res) {
     if (req.query.filter) {
+        try {
+            filter = JSON.parse(req.query.filter);
+        } catch (err) {
+            filter = {};
+            logger.error(err);
+        }
         model.where(req.query.filter);
     }
     model.countDocuments().then(count => {
