@@ -91,9 +91,9 @@ SwaggerExpress.create({
     app.use((err, req, res, next) => {
         if (req.headers['content-type'] && req.headers['content-type'].indexOf('application/json') > -1) {
             if (err.statusCode == 404 || err.statusCode == 405) {
-                res.json({ message: messages.error['404'] });
+                res.status(404).json({ message: messages.error['404'] });
             } else {
-                res.json(err);
+                res.status(500).json(err);
             }
         } else {
             next();

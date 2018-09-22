@@ -4,6 +4,7 @@ module.exports.getContent = _getContent;
 
 function _getContent(_name) {
     return `
+
 const mongoose = require('mongoose');
 const log4js = require('log4js');
 const schemaJSON = require('../schemas/userDetails.schema');
@@ -38,24 +39,8 @@ function _retrive(req, res) {
     if (req.query.page && (+req.query.page) > 0) {
         skip = count * ((+req.query.page) - 1);
     }
-    if (req.query.filter) {
-        try {
-            filter = JSON.parse(req.query.filter, (key, value) => {
-                if (typeof value == 'string' && value.match(/^(\/)*[\w]+(\/)*[a-z]{0,1}/)) {
-                    if (value.charAt(value.length - 1) != '/') {
-                        return new RegExp(value.replace(/^\/*([\w]+)\/*[a-z]*$/, '$1'), value.replace(/^.*\/([a-z]+)$/, '$1'));
-                    } else {
-                        return new RegExp(value.replace(/^\/*([\w]+)\/*[a-z]*$/, '$1'));
-                    }
-                }
-                return value;
-            });
-        } catch (err) {
-            logger.error(err);
-        }
-    }
-    if (req.params.id) {
-        query = model.findById(req.params.id);
+    if (req.swagger.params.id.value) {
+        query = model.findById(req.swagger.params.id.value);
     } else {
         query = model.find(filter);
         query.skip(skip);
@@ -76,7 +61,7 @@ function _retrive(req, res) {
 }
 
 function _update(req, res) {
-    model.findById(req.params.id).then(doc => {
+    model.findById(req.swagger.params.id.value).then(doc => {
         if (!doc) {
             res.status(404).json({ message: messages.put['404'] });
         } else {
@@ -95,7 +80,7 @@ function _update(req, res) {
 }
 
 function _delete(req, res) {
-    model.findById(req.params.id).then(doc => {
+    model.findById(req.swagger.params.id.value).then(doc => {
         if (!doc) {
             res.status(404).json({ message: messages.delete['404'] });
         } else {
@@ -132,7 +117,6 @@ module.exports = {
     update: _update,
     delete: _delete,
     count: _count
-}
-    
+}    
     `;
 }
