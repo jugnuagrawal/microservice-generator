@@ -1,4 +1,4 @@
-var mongoose = require("mongoose");
+var mongoose = require('mongoose');
 
 function createId(next, size) {
     var char = this.charAt(0).toUpperCase();
@@ -25,12 +25,12 @@ var counterSchema = new mongoose.Schema({
         type: Number
     }
 });
-var counterModel = mongoose.model("counter", counterSchema);
+var counterModel = mongoose.model('counter', counterSchema);
 function _creatCounter(collectionName) {
     counterModel.create({
         _id: collectionName,
         next: 1
-    }).then(() => {}, () => {});
+    }).then(() => { }, () => { });
 };
 
 function _getNext(collectionName, callback) {
@@ -51,8 +51,8 @@ function _getNextId(collectionName) {
     return function (next) {
         var self = this;
         if (!self._id) {
-            _getNext(collectionName,function(_err,_doc){
-                self._id = collectionName.createId(_doc.next,10);
+            _getNext(collectionName, function (_err, _doc) {
+                self._id = collectionName.createId(_doc.next, 10);
                 next();
             });
         } else {

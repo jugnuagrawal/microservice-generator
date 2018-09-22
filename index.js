@@ -6,7 +6,7 @@ const app = require('./templates/app.template');
 const controller = require('./templates/controller.template');
 const indexController = require('./templates/index.controller');
 const swagger = require('./templates/yaml.template');
-
+const messages = require('./templates/messages.template');
 
 String.prototype.toCamelCase = function () {
     return this.split(' ').map((e, i) => i === 0 ? e.toLowerCase() : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
@@ -55,14 +55,14 @@ function createProject(_data) {
 
     fse.copySync(path.join(__dirname, 'apidoc'), path.join(_path, 'apidoc'));
 
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8');
     console.log(_name + '.controller.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_name), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_name), 'utf-8');
     console.log('index.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8');
     console.log(_name + '.schema.json created!');
-    fs.copyFileSync(path.join(__dirname, 'templates/messages.template.json'), path.join(_path, 'api', 'messages', _name + '.messages.json'));
-    console.log(_name + '.messages.json created!');
+    fs.writeFileSync(path.join(_path, 'api', 'messages', _name + '.messages.js'), messages.getContent(), 'utf-8');
+    console.log(_name + '.messages.js created!');
     fs.writeFileSync(path.join(_path, 'api', 'swagger', _name + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
     console.log(_name + '.swagger.yaml created!');
 
