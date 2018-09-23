@@ -46,7 +46,6 @@ function _retrive(req, res) {
             filter = {};
             logger.error(err);
         }
-        model.where(filter);
     }
     if (req.swagger.params.id && req.swagger.params.id.value) {
         query = model.findById(req.swagger.params.id.value);
@@ -119,7 +118,7 @@ function _delete(req, res) {
 }
 
 function _count(req, res) {
-    var filter:
+    var filter = {};
     if (req.query.filter) {
         try {
             filter = JSON.parse(req.query.filter);
@@ -127,9 +126,10 @@ function _count(req, res) {
             filter = {};
             logger.error(err);
         }
-        model.where(filter);
     }
-    model.countDocuments().then(count => {
+    const query = model.countDocuments();
+    query.where(filter);
+    query.exec().then(count => {
         res.status(200).json(count);
     }).catch(err => {
         logger.error(err);
