@@ -7,6 +7,7 @@ const controller = require('./templates/controller.template');
 const indexController = require('./templates/index.controller');
 const swagger = require('./templates/yaml.template');
 const messages = require('./templates/messages.template');
+const docker = require('./templates/docker.template');
 
 String.prototype.toCamelCase = function () {
     return this.split(' ').map((e, i) => i === 0 ? e.toLowerCase() : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
@@ -43,9 +44,6 @@ function createProject(_data) {
     if (!fs.existsSync(path.join(_path, 'api', 'messages'))) {
         fs.mkdirSync(path.join(_path, 'api', 'messages'));
     }
-    // if (!fs.existsSync(path.join(_path, 'api', 'utils'))) {
-    //     fs.mkdirSync(path.join(_path, 'api', 'utils'));
-    // }
     if (!fs.existsSync(path.join(_path, 'apidoc'))) {
         fs.mkdirSync(path.join(_path, 'apidoc'));
     }
@@ -66,13 +64,16 @@ function createProject(_data) {
     fs.writeFileSync(path.join(_path, 'api', 'swagger', _name + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
     console.log(_name + '.swagger.yaml created!');
 
-    //required once execution
-    // fs.copyFileSync(path.join(__dirname, 'templates/utils.template.js'), path.join(_path, 'api', 'utils', 'utils.js'))
-    // console.log('utils.js created!');
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
     fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')
     console.log('package.json created!');
+    fs.writeFileSync(path.join(_path, '.gitignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
+    console.log('.gitignore created!');
+    fs.writeFileSync(path.join(_path, 'Dockerfile'), docker.getContent(_port, _database), 'utf-8');
+    console.log('Dockerfile created!');
+    fs.writeFileSync(path.join(_path, '.dockerignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
+    console.log('.dockerignore created!');
 }
 
 

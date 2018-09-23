@@ -15,15 +15,15 @@ const jsyaml = require('js-yaml');
 const messages = require('./api/messages/${_name}.messages');
 const logger = log4js.getLogger('Server');
 const app = express();
-const host = process.env.HOST || 'localhost';
-const port = process.env.PORT || ${_port};
-const mongo_url = process.env.MONGO_URL || 'mongodb://localhost:27017/${_database}';
+const PORT = process.env.PORT || ${_port};
+const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/${_database}';
+const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
 //log4js configuration
 log4js.configure({
     appenders: { 'out': { type: 'stdout' },server: { type: 'file', filename: 'logs/server.log' ,maxLogSize:52428800} },
-    categories: { default: { appenders: ['out','server'], level: 'info' } }
-    });
+    categories: { default: { appenders: ['out','server'], level: LOG_LEVEL } }
+});
 
 //body parser middleware
 app.use(bodyParser.json());
@@ -41,7 +41,7 @@ app.use((req, res, next)=>{
 //checking mongodb is available
 app.use((req, res, next)=>{
     if (mongoose.connections.length == 0 || mongoose.connections[0].readyState != 1) {
-        mongoose.connect(mongo_url, (err) => {
+        mongoose.connect(MONGO_URL, (err) => {
             if (err) {
                 logger.error(err);
                 res.status(500).json({ message: messages.error['500'] });
@@ -72,7 +72,7 @@ app.get('/swagger', (req, res) => {
     res.json(jsyaml.safeLoad(content, 'utf8'));
 });
 
-mongoose.connect(mongo_url, (err) => {
+mongoose.connect(MONGO_URL, (err) => {
     if (err) {
         logger.error(err);
         process.exit(0);
@@ -89,6 +89,7 @@ SwaggerExpress.create({
     swaggerExpress.register(app);
     // Error handler
     app.use((err, req, res, next) => {
+        logger.error(err);
         if (req.headers['content-type'] && req.headers['content-type'].indexOf('application/json') > -1) {
             if (err.statusCode == 404 || err.statusCode == 405) {
                 res.status(404).json({ message: messages.error['404'] });
@@ -99,12 +100,12 @@ SwaggerExpress.create({
             next();
         }
     });
-    app.listen(port, (err) => {
-        if (!err) {
-            logger.info('Server started on port ' + port);
-        }
-        else
+    app.listen(PORT, (err) => {
+        if (err) {
             logger.error(err);
+        }else{
+            logger.info('Server started on port ' + PORT);
+        }
     });
 });
     `;

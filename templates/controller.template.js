@@ -4,19 +4,19 @@ module.exports.getContent = _getContent;
 
 function _getContent(_name) {
     return `
-
 const mongoose = require('mongoose');
 const log4js = require('log4js');
-const schemaJSON = require('../schemas/userDetails.schema');
-const messages = require('../messages/userDetails.messages');
+const schemaJSON = require('../schemas/${_name}.schema');
+const messages = require('../messages/${_name}.messages');
 const schema = new mongoose.Schema(schemaJSON);
 const logger = log4js.getLogger('Controller');
+const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
-const model = mongoose.model('userDetails', schema);
+const model = mongoose.model('${_name}', schema, '${_name}');
 
 log4js.configure({
     appenders: { 'out': { type: 'stdout' }, controller: { type: 'file', filename: 'logs/controller.log', maxLogSize: 52428800 } },
-    categories: { default: { appenders: ['out', 'controller'], level: 'info' } }
+    categories: { default: { appenders: ['out', 'controller'], level: LOG_LEVEL } }
 });
 
 function _create(req, res) {
@@ -46,7 +46,7 @@ function _retrive(req, res) {
             filter = {};
             logger.error(err);
         }
-        model.where(req.query.filter);
+        model.where(filter);
     }
     if (req.swagger.params.id && req.swagger.params.id.value) {
         query = model.findById(req.swagger.params.id.value);
@@ -119,6 +119,7 @@ function _delete(req, res) {
 }
 
 function _count(req, res) {
+    var filter:
     if (req.query.filter) {
         try {
             filter = JSON.parse(req.query.filter);
@@ -126,7 +127,7 @@ function _count(req, res) {
             filter = {};
             logger.error(err);
         }
-        model.where(req.query.filter);
+        model.where(filter);
     }
     model.countDocuments().then(count => {
         res.status(200).json(count);
