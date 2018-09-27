@@ -55,9 +55,23 @@ generator.createProject(schema);
 ```sh
 $ npm install -g microservice-generator
 
-$ misgen
+$ misgen -h
 
-Enter the full path of your schema file [sampleSchema.json] : /usr/home/workspace/schema.json
+Usage: misgen [options] <name>
+
+Options:
+
+  -V, --version  output the version number
+  -d, --dir      Directory name 
+  -h, --help     output usage information
+
+
+# [-d generates microservice for all the schema files in a directory
+```
+
+```sh
+
+$ misgen schema.json
 
 #The project folder will be generated at the location of schema.json file
 ```

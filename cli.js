@@ -1,44 +1,36 @@
 #!/usr/bin/env node
 
 const fs = require('fs');
-const readline = require('readline');
+const path = require('path');
+const program = require('commander');
 const generator = require('./index');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-});
-
-function ask() {
-    rl.question('Location of your schema file [sampleSchema.json] : ', (_fileName) => {
-        if (!_fileName.trim()) {
-            console.log('No file name entered, using sampleSchema.json');
-            rl.close();
-            getSchema('sampleSchema.json');
-        } else if (_fileName.match(/^.*\.json$/i)) {
-            getSchema(_fileName);
-            rl.close();
+program
+    .version('2.2.5')
+    .usage('[options] <name>')
+    .arguments('<name>')
+    .option('-d, --dir', 'Directory name')
+    .action(function (name, options) {
+        let location = path.join(process.cwd(), name);
+        if (options.dir) {
+            const files = fs.readdirSync(location, 'utf8');
+            files.forEach(file => {
+                getSchema(path.join(location, file));
+            });
         } else {
-            console.log('Please enter a valid file name');
-            ask();
+            getSchema(location);
         }
-    });
-}
-ask();
+    }).parse(process.argv);
 
-rl.on('close', () => {
-    console.log();
-});
 
-function getSchema(_fileName) {
-    if (fs.existsSync(_fileName)) {
-        fs.readFile(_fileName, 'utf8', (_err, _data) => {
-            if (_err) throw _err;
-            const json = JSON.parse(_data);
-            json.filePath = _fileName;
-            generator.createProject(json);
-        });
-    } else {
-        console.log(_fileName, ' does not exist.');
+function getSchema(filePath) {
+    try {
+        fs.statSync(filePath)
+        let data = fs.readFileSync(filePath, 'utf8');
+        const json = JSON.parse(data);
+        json.filePath = filePath;
+        generator.createProject(json);
+    } catch (e) {
+        console.log(e.message);
     }
 }
