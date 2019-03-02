@@ -8,6 +8,7 @@ const indexController = require('./templates/index.controller');
 const swagger = require('./templates/yaml.template');
 const messages = require('./templates/messages.template');
 const docker = require('./templates/docker.template');
+const readme = require('./templates/readme.template');
 
 String.prototype.toCamelCase = function () {
     return this.split(' ').map((e, i) => i === 0 ? e.toLowerCase() : (e[0].toUpperCase() + e.substr(1, e.length))).join('');
@@ -80,6 +81,8 @@ function createProject(_data) {
     console.log('Dockerfile created!');
     fs.writeFileSync(path.join(_path, '.dockerignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
     console.log('.dockerignore created!');
+    fs.writeFileSync(path.join(_path, 'README.md'), readme.getContent(_nameKebabCase), 'utf-8');
+    console.log('README.md created!');
 }
 
 

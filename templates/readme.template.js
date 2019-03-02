@@ -2,35 +2,17 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_nameCamelCase, _nameKebabCase) {
+function _getContent(_nameKebabCase) {
   return `
-{
-    "name": "${_nameKebabCase}",
-    "version": "1.0.0",
-    "description": "A swagger express mongoose CRUD api",
-    "main": "app.js",
-    "scripts": {
-      "start":"node app.js"
-    },
-    "keywords": [
-      "CRUD",
-      "Node",
-      "JS",
-      "Swagger",
-      "Express",
-      "Mongoose",
-      "REST"
-    ],
-    "dependencies": {
-      "body-parser": "^1.18.2",
-      "express": "^4.16.2",
-      "log4js": "^2.5.2",
-      "mongoose": "^5.0.3",
-      "js-yaml": "^3.12.0",
-      "swagger-express-mw": "^0.7.0"
-    },
-    "author": "Jugnu Agrawal",
-    "license": "ISC"
-}
+# ${_nameKebabCase}
+
+## docker variables
+
+| Variable | Usage |
+| -------- | ----- |
+| MONGO_URL | -e MONGO_URL=<<_your_mongo_url_>> |
+| LOG_LEVEL | -e LOG_LEVEL=<<_your_log_level_>> |
+| PORT | -e PORT=<<_your_port_>> |
+| LOGS | -v <<_your_path_>>:/logs |
     `;
 }
