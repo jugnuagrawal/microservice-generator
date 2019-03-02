@@ -17,8 +17,13 @@ String.prototype.toPascalCase = function () {
     return this.split(' ').map(e => e[0].toUpperCase() + e.substr(1, e.length)).join('');
 }
 
+String.prototype.toKebabCase = function () {
+    return this.split(' ').map(e => e.toLowerCase()).join('-');
+}
+
 function createProject(_data) {
     var _name = _data.name.toCamelCase();
+    var _packageName = _data.name.toKebabCase();
     var _api = _data.api ? _data.api : _name;
     var _path = path.join(_name);
     if (_data.filePath) {
@@ -66,7 +71,7 @@ function createProject(_data) {
 
     fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
-    fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_name), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_packageName), 'utf-8')
     console.log('package.json created!');
     fs.writeFileSync(path.join(_path, '.gitignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
     console.log('.gitignore created!');
