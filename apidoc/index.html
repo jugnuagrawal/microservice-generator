@@ -25,6 +25,14 @@
       margin: 0;
       background: #fafafa;
     }
+
+    .swagger-ui .topbar {
+      display: none;
+    }
+
+    .swagger-ui .info hgroup.main a {
+      display: none;
+    }
   </style>
 </head>
 
@@ -41,9 +49,9 @@
         url: "swagger",
         dom_id: '#swagger-ui',
         deepLinking: true,
-        requestInterceptor:function(req){
+        requestInterceptor: function (req) {
           req.headers = {
-            'content-type':'application/json'
+            'content-type': 'application/json'
           };
           return req;
         },
