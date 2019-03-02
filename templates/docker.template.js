@@ -1,7 +1,7 @@
 
 function _getContent(_port, _database) {
     return `
-FROM node:8-alpine
+FROM node:10.15-alpine
 WORKDIR /app
 COPY . .
 ENV PORT ${_port}
