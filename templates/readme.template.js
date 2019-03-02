@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_nameKebabCase) {
+function _getContent(_nameCamelCase, _nameKebabCase) {
   return `
 {
     "name": "${_nameKebabCase}",

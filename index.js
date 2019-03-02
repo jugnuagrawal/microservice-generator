@@ -22,17 +22,18 @@ String.prototype.toKebabCase = function () {
 }
 
 function createProject(_data) {
-    var _name = _data.name.toCamelCase();
-    var _packageName = _data.name.toKebabCase();
-    var _api = _data.api ? _data.api : _name;
-    var _path = path.join(_name);
+    var _nameCamelCase = _data.name.toCamelCase();
+    var _nameKebabCase = _data.name.toKebabCase();
+    var _namePascalCase = _data.name.toPascalCase();
+    var _api = _data.api ? _data.api : _nameCamelCase;
+    var _path = path.join(_nameKebabCase);
     if (_data.filePath) {
         var segments = _data.filePath.split('/');
         segments.pop();
-        segments.push(_name);
+        segments.push(_nameKebabCase);
         _path = segments.join('/');
     }
-    var _database = _data.database ? _data.database : _name;
+    var _database = _data.database ? _data.database : _nameCamelCase;
     var _port = _data.port ? _data.port : 3000;
     if (!fs.existsSync(_path)) {
         fs.mkdirSync(_path);
@@ -58,20 +59,20 @@ function createProject(_data) {
 
     fse.copySync(path.join(__dirname, 'apidoc'), path.join(_path, 'apidoc'));
 
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', _name + '.controller.js'), controller.getContent(_name, _data.id), 'utf-8');
-    console.log(_name + '.controller.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_name), 'utf-8');
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', _nameKebabCase + '.controller.js'), controller.getContent(_nameCamelCase, _nameKebabCase), 'utf-8');
+    console.log(_nameKebabCase + '.controller.js created!');
+    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_nameCamelCase, _nameKebabCase), 'utf-8');
     console.log('index.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'schemas', _name + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8');
-    console.log(_name + '.schema.json created!');
-    fs.writeFileSync(path.join(_path, 'api', 'messages', _name + '.messages.js'), messages.getContent(), 'utf-8');
-    console.log(_name + '.messages.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'swagger', _name + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
-    console.log(_name + '.swagger.yaml created!');
+    fs.writeFileSync(path.join(_path, 'api', 'schemas', _nameKebabCase + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8');
+    console.log(_nameKebabCase + '.schema.json created!');
+    fs.writeFileSync(path.join(_path, 'api', 'messages', _nameKebabCase + '.messages.js'), messages.getContent(), 'utf-8');
+    console.log(_nameKebabCase + '.messages.js created!');
+    fs.writeFileSync(path.join(_path, 'api', 'swagger', _nameKebabCase + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
+    console.log(_nameKebabCase + '.swagger.yaml created!');
 
-    fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_name, path.join('/', _api), _database, _port), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_nameKebabCase, path.join('/', _api), _database, _port), 'utf-8')
     console.log('app.js created!');
-    fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_packageName), 'utf-8')
+    fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_nameKebabCase), 'utf-8')
     console.log('package.json created!');
     fs.writeFileSync(path.join(_path, '.gitignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
     console.log('.gitignore created!');

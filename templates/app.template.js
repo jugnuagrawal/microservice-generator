@@ -2,7 +2,7 @@ const path = require('path');
 
 module.exports.getContent = _getContent;
 
-function _getContent(_name, _api, _database, _port) {
+function _getContent(_nameKebabCase, _api, _database, _port) {
     return `
 const fs = require('fs');
 const path = require('path');
@@ -12,7 +12,7 @@ const log4js = require('log4js');
 const mongoose = require('mongoose');
 const SwaggerExpress = require('swagger-express-mw');
 const jsyaml = require('js-yaml');
-const messages = require('./api/messages/${_name}.messages');
+const messages = require('./api/messages/${_nameKebabCase}.messages');
 const logger = log4js.getLogger('Server');
 const app = express();
 const PORT = process.env.PORT || ${_port};
@@ -68,7 +68,7 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'apidoc', 'index.html'));
 });
 app.get('/swagger', (req, res) => {
-    const content = fs.readFileSync(path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml'), 'utf8');
+    const content = fs.readFileSync(path.join(__dirname, 'api', 'swagger', '${_nameKebabCase}.swagger.yaml'), 'utf8');
     res.json(jsyaml.safeLoad(content, 'utf8'));
 });
 
@@ -83,7 +83,7 @@ mongoose.connect(MONGO_URL, (err) => {
 
 SwaggerExpress.create({
     appRoot: __dirname,
-    swaggerFile: path.join(__dirname, 'api', 'swagger', '${_name}.swagger.yaml')
+    swaggerFile: path.join(__dirname, 'api', 'swagger', '${_nameKebabCase}.swagger.yaml')
 }, (err, swaggerExpress) => {
     if (err) { throw err; }
     swaggerExpress.register(app);

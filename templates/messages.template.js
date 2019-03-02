@@ -1,5 +1,5 @@
 
-function _getContent(_name) {
+function _getContent() {
     return `
 module.exports = {
     "get": {

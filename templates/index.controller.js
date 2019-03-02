@@ -1,14 +1,14 @@
 
-function _getContent(_name) {
+function _getContent(_nameCamelCase, _nameKebabCase) {
     return `
-const ${_name}Controller = require('./${_name}.controller.js');
+const ${_nameCamelCase}Controller = require('./${_nameKebabCase}.controller.js');
 module.exports = {
-    ${_name}Create:${_name}Controller.create,
-    ${_name}Retrive:${_name}Controller.retrive,
-    ${_name}RetriveAll:${_name}Controller.retrive,
-    ${_name}Update:${_name}Controller.update,
-    ${_name}Delete:${_name}Controller.delete,
-    ${_name}Count:${_name}Controller.count
+    ${_nameCamelCase}Create:${_nameCamelCase}Controller.create,
+    ${_nameCamelCase}Retrive:${_nameCamelCase}Controller.retrive,
+    ${_nameCamelCase}RetriveAll:${_nameCamelCase}Controller.retrive,
+    ${_nameCamelCase}Update:${_nameCamelCase}Controller.update,
+    ${_nameCamelCase}Delete:${_nameCamelCase}Controller.delete,
+    ${_nameCamelCase}Count:${_nameCamelCase}Controller.count
 };
 `;
 }
