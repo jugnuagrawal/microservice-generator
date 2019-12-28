@@ -1,6 +1,6 @@
 # Microservice Generator
 
-This tool to generate microservice based on swagger, express js and mongoose js which can do CRUD operation using RESTful web service.
+This tool to generate microservice based on swagger, express js and mongoose js which can do CRUD operation using REST APIs.
 
 
 ### Use like a node module

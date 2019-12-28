@@ -22,10 +22,10 @@ function _getContent(_nameKebabCase) {
       "REST"
     ],
     "dependencies": {
-      "body-parser": "^1.18.2",
-      "express": "^4.16.2",
-      "log4js": "^2.5.2",
-      "mongoose": "^5.0.3",
+      "body-parser": "^1.19.0",
+      "express": "^4.17.1",
+      "log4js": "^6.1.0",
+      "mongoose": "^5.8.3",
       "js-yaml": "^3.12.0",
       "swagger-express-mw": "^0.7.0"
     },

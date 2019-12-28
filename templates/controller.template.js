@@ -8,28 +8,14 @@ const mongoose = require('mongoose');
 const log4js = require('log4js');
 const schemaJSON = require('../schemas/${_nameKebabCase}.schema');
 const messages = require('../messages/${_nameKebabCase}.messages');
+
 const schema = new mongoose.Schema(schemaJSON);
-const logger = log4js.getLogger('Controller');
-const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
+const logger = log4js.getLogger('${_nameKebabCase}.controller');
 
 const model = mongoose.model('${_nameCamelCase}', schema, '${_nameCamelCase}');
 
-log4js.configure({
-    appenders: { 'out': { type: 'stdout' }, controller: { type: 'file', filename: 'logs/controller.log', maxLogSize: 52428800 } },
-    categories: { default: { appenders: ['out', 'controller'], level: LOG_LEVEL } }
-});
-
-//Exporting CRUD controllers
-const e = {
-    create: (req, res) => {
-        model.create(req.body).then(data => {
-            res.status(200).json(data);
-        }).catch(err => {
-            logger.error(err);
-            res.status(500).json({ message: messages.post['500'] });
-        });
-    },
-    retrive: (req, res) => {
+function retrive(req, res) {
+    async function execute() {
         var query = null;
         var skip = 0;
         var count = 10;
@@ -50,93 +36,88 @@ const e = {
         }
         if (req.swagger.params.id && req.swagger.params.id.value) {
             query = model.findById(req.swagger.params.id.value);
+        } else if (req.query.countOnly) {
+            query = model.countDocuments(filter);
         } else {
             query = model.find(filter);
             query.skip(skip);
             query.limit(count);
         }
-        if (req.query.select) {
-            query.select(req.query.select.split(',').join(' '));
-        }
-        if (req.query.sort) {
-            query.sort(req.query.sort.split(',').join(' '))
-        }
-        query.exec().then(data => {
-            if (req.swagger.params.id && req.swagger.params.id.value && !data) {
-                res.status(404).json({ message: messages.get['404'] });
-            } else {
-                res.status(200).json(data);
+        if (!req.query.countOnly) {
+            if (req.query.select) {
+                query.select(req.query.select.split(',').join(' '));
             }
-        }).catch(err => {
-            logger.error(err);
-            res.status(500).json({ message: messages.get['500'] });
-        });
-    },
-    update: (req, res) => {
+            if (req.query.sort) {
+                query.sort(req.query.sort.split(',').join(' '))
+            }
+        }
+        const data = query.exec();
+        if (req.swagger.params.id && req.swagger.params.id.value && !data) {
+            res.status(404).json({ message: messages.get['404'] });
+        } else {
+            res.status(200).json(data);
+        }
+    }
+    execute().catch(err => {
+        logger.error(err);
+        res.status(500).json({ message: messages.post['500'] });
+    });
+}
+
+function create(req, res) {
+    async function execute() {
+        const data = await model.create(req.body);
+        res.status(200).json(data);
+    }
+    execute().catch(err => {
+        logger.error(err);
+        res.status(500).json({ message: messages.post['500'] });
+    });
+}
+
+function update(req, res) {
+    async function execute() {
         if (!req.swagger.params.id) {
             res.status(400).json({ message: messages.put['400'] });
             return;
         }
-        model.findById(req.swagger.params.id.value).then(doc => {
-            if (!doc) {
-                res.status(404).json({ message: messages.put['404'] });
-            } else {
-                doc.set(req.body);
-                doc.save().then(data => {
-                    res.status(200).json(data);
-                }).catch(err => {
-                    logger.error(err);
-                    res.status(500).json({ message: messages.put['500'] });
-                });
-            }
-        }).catch(err => {
-            logger.error(err);
-            res.status(500).json({ message: messages.put['500'] });
-        });
-    },
-    delete: (req, res) => {
+        const doc = model.findById(req.swagger.params.id.value)
+        if (!doc) {
+            res.status(404).json({ message: messages.put['404'] });
+        } else {
+            doc.set(req.body);
+            const data = doc.save();
+            res.status(200).json(data);
+        }
+    }
+    execute().catch(err => {
+        logger.error(err);
+        res.status(500).json({ message: messages.post['500'] });
+    });
+}
+
+function destroy(req, res) {
+    async function execute() {
         if (!req.swagger.params.id) {
             res.status(400).json({ message: messages.delete['400'] });
             return;
         }
-        model.findById(req.swagger.params.id.value).then(doc => {
-            if (!doc) {
-                res.status(404).json({ message: messages.delete['404'] });
-            } else {
-                doc.remove().then(data => {
-                    res.status(200).json(data);
-                }).catch(err => {
-                    logger.error(err);
-                    res.status(500).json({ message: messages.delete['500'] });
-                });
-            }
-        }).catch(err => {
-            logger.error(err);
-            res.status(500).json({ message: messages.delete['500'] });
-        });
-    },
-    count: (req, res) => {
-        var filter = {};
-        if (req.query.filter) {
-            try {
-                filter = JSON.parse(req.query.filter);
-            } catch (err) {
-                filter = {};
-                logger.error(err);
-            }
+        const doc = model.findById(req.swagger.params.id.value)
+        if (!doc) {
+            res.status(404).json({ message: messages.delete['404'] });
+        } else {
+            const data = doc.remove();
+            res.status(200).json(data);
         }
-        const query = model.countDocuments();
-        query.where(filter);
-        query.exec().then(count => {
-            res.status(200).json(count);
-        }).catch(err => {
-            logger.error(err);
-            res.status(500).json({ message: messages.error['500'] });
-        });
     }
-};
+    execute().catch(err => {
+        logger.error(err);
+        res.status(500).json({ message: messages.post['500'] });
+    });
+}
 
-
-module.exports = e;
-    `;
+module.exports.create = create;
+module.exports.retrive = retrive;
+module.exports.update = update;
+module.exports.destroy = destroy;`
 }

@@ -7,8 +7,7 @@ module.exports = {
     ${_nameCamelCase}Retrive:${_nameCamelCase}Controller.retrive,
     ${_nameCamelCase}RetriveAll:${_nameCamelCase}Controller.retrive,
     ${_nameCamelCase}Update:${_nameCamelCase}Controller.update,
-    ${_nameCamelCase}Delete:${_nameCamelCase}Controller.delete,
-    ${_nameCamelCase}Count:${_nameCamelCase}Controller.count
+    ${_nameCamelCase}Delete:${_nameCamelCase}Controller.destroy
 };
 `;
 }

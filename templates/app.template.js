@@ -12,16 +12,19 @@ const log4js = require('log4js');
 const mongoose = require('mongoose');
 const SwaggerExpress = require('swagger-express-mw');
 const jsyaml = require('js-yaml');
+
 const messages = require('./api/messages/${_nameKebabCase}.messages');
-const logger = log4js.getLogger('Server');
+
+const logger = log4js.getLogger('server');
 const app = express();
+
 const PORT = process.env.PORT || ${_port};
 const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017/${_database}';
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 
 //log4js configuration
 log4js.configure({
-    appenders: { 'out': { type: 'stdout' },server: { type: 'file', filename: 'logs/server.log' ,maxLogSize:52428800} },
+    appenders: { 'out': { type: 'stdout' },server: { type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log', maxLogSize:52428800, backups: 3, compress: true } },
     categories: { default: { appenders: ['out','server'], level: LOG_LEVEL } }
 });
 
@@ -31,10 +34,10 @@ app.use(bodyParser.urlencoded());
 
 //logging each request
 app.use((req, res, next)=>{
-    logger.info(req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,req.path,req.params,req.query,req.body);
-    res.setHeader('Access-Control-Allow-Origin','*');
-    res.setHeader('Access-Control-Allow-Methods','*');
-    res.setHeader('Access-Control-Allow-Headers','*');
+    logger.info(req.method,req.headers['x-forwarded-for'] || req.connection.remoteAddress,req.path);
+    // res.setHeader('Access-Control-Allow-Origin','*');
+    // res.setHeader('Access-Control-Allow-Methods','*');
+    // res.setHeader('Access-Control-Allow-Headers','*');
     next();
 });
 
@@ -54,15 +57,6 @@ app.use((req, res, next)=>{
     }
 });
 
-// Uncomment and right your own business logic to do Authentication check
-/*app.use((req,res,next)=>{
-    if(req.headers.authorization){
-        next();
-    }else{
-        res.status(401).json({message:messages.error['401']});
-    }
-});*/
-
 app.use(express.static(path.join(__dirname, 'apidoc')));
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'apidoc', 'index.html'));
@@ -77,7 +71,7 @@ mongoose.connect(MONGO_URL, (err) => {
         logger.error(err);
         process.exit(0);
     }else{
-        logger.info('Connected to db');
+        logger.info('Connected to Database');
     }
 });
 

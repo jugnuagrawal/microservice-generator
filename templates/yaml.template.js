@@ -29,6 +29,12 @@ const retriveAllParameter = [
         in: "query",
         type: "string",
         description: "Sort documents based on field"
+    },
+    {
+        name: "countOnly",
+        in: "query",
+        type: "boolean",
+        description: "Show only total count of records"
     }
 ];
 const retriveParameter = [
@@ -108,33 +114,13 @@ function getContent(config) {
         host: "localhost:" + (config.port || 3000),
         basePath: '/',
         schemes: ["http"],
-        consumes: ["multipart/form-data", "application/json"],
-        produces: ["application/json", "text/plain"],
+        consumes: ["application/json"],
+        produces: ["application/json"],
         paths: {},
         definitions: {}
     };
     var name = toCamelCase(config.name);
     swagger.definitions[`${name}_create`] = definition;
-    swagger.paths[basePath + '/count'] = {
-        "x-swagger-router-controller": 'index',
-        "get": {
-            description: `Counts the number of ${name} documents`,
-            operationId: `${name}Count`,
-            parameters: [
-                {
-                    name: "filter",
-                    in: "query",
-                    type: "string",
-                    description: "Filter documents based on certain fields"
-                }
-            ],
-            responses: {
-                "200": { description: "Number of records" },
-                "400": { description: "Bad parameters" },
-                "500": { description: "Internal server error" }
-            }
-        }
-    };
     swagger.paths[basePath] = {
         "x-swagger-router-controller": 'index',
         "get": {
