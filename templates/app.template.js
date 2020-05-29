@@ -12,7 +12,7 @@ const MONGO_URL = process.env.MONGO_URL || 'mongodb://localhost:27017';
 const DATABASE = process.env.DATABASE || '${data.database}';
 const LOG_LEVEL = process.env.LOG_LEVEL || 'info';
 const JSON_LIMIT = process.env.JSON_LIMIT || '500kb';
-
+global.collectionName = '${data.nameCamelCase}';
 
 log4js.configure({
     appenders: { 'out': { type: 'stdout' },server: { type: 'multiFile', base: 'logs/', property: 'categoryName', extension: '.log', maxLogSize:52428800, backups: 3, compress: true } },
@@ -22,7 +22,7 @@ log4js.configure({
 MongoClient.connect(MONGO_URL).then(client => {
     const db = client.db(DATABASE);
     global.db = db;
-    global.collection = db.collection('${data.nameCamelCase}');
+    global.collection = db.collection(global.collectionName);
     logger.info('Database Connected');
 }).catch(err => {
     logger.error('Unable to connect to Database');

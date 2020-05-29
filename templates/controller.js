@@ -73,14 +73,14 @@ router.put('/:id', function (req, res) {
         if (!doc) {
             res.status(404).json({ message: 'Document Not Found' });
         } else {
-            const payload = _.merge(doc, req.body);
+            const payload = _.merge(JSON.parse(JSON.stringify(doc)), req.body);
             if (_.isEqual(payload, doc)) {
                 return res.status(200).json(payload);
             }
             if (!validate(payload)) {
                 return res.status(400).json(validate.errors);
             }
-            const data = await model.update(payload);
+            const data = await model.update(req.params.id, payload);
             res.status(200).json(payload);
         }
     }

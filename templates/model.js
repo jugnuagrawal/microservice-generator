@@ -17,14 +17,14 @@ async function find(options) {
     }
     let cursor = collection.find(options.filter);
     if (options.select) {
-        cursor = cursor.project(getObject(options.select));
+        cursor.project(getObject(options.select));
     }
     if (options.sort) {
-        cursor = cursor.sort(getObject(options.sort));
+        cursor.sort(getObject(options.sort));
     }
     if (options.count != -1) {
-        cursor = cursor.skip(options.page * options.count);
-        cursor = cursor.limit(options.count);
+        cursor.skip((options.page - 1) * options.count);
+        cursor.limit(options.count);
     }
     return cursor.toArray();
 }
@@ -80,11 +80,18 @@ async function removeMany(filter) {
 
 async function create(data) {
     const collection = global.collection;
+    data._id = await utils.getNextID(global.collectionName);
     return collection.insertOne(data);
 }
 
 async function createMany(data) {
     const collection = global.collection;
+    const flag = await data.reduce((prev, curr) => {
+        return prev.then(async () => {
+            curr._id = await utils.getNextID(global.collectionName);
+            return;
+        });
+    }, Promise.resolve());
     return collection.insertMany(data);
 }
 
