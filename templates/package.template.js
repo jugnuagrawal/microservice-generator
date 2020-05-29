@@ -3,7 +3,7 @@ function getContent(data) {
 {
     "name": "${data.nameKebabCase}",
     "version": "1.0.0",
-    "description": "A swagger express mongoose CRUD api",
+    "description": "A JSON Schema express CRUD",
     "main": "app.js",
     "scripts": {
       "start":"node app.js"
