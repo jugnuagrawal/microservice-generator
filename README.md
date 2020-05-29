@@ -1,68 +1,44 @@
 # Microservice Generator
 
-This tool to generate microservice based on swagger, express js and mongoose js which can do CRUD operation using REST APIs.
-
+A node js tool to generate a microservice to do CRUD operation over REST API for the given JSON Schema.
 
 ### Use like a node module
 
 ```sh
-$ npm install --save microservice-generator
+$ npm install --save @agtech/ms-gen
 ```
 
-- import microservice-generator to your project and pass the schema json.
+- import @agtech/ms-gen to your project and pass the schema json.
 
 ```javascript
-const generator = require('microservice-generator');
+const generator = require("@agtech/ms-gen");
 
-var schema = {
-    "name": "User Details",
-    "api": "/user",
-    "port": 3000,
-    "database": "users",
-    "schema": {
-        "name": "String",
-        "email": {
-            "type": "String",
-            "unique": true,
-            "required": true
-        },
-        "password": "String",
-        "contactNos": [
-            {
-                "code": "String",
-                "number": "Number"
-            }
-        ],
-        "gender": "String",
-        "address": {
-            "houseNo": "String",
-            "street": "String",
-            "city": "String",
-            "state": "String",
-            "country": "String",
-            "pincode": "Number"
-        }
-    }
-}
+var data = {
+  name: "User Details",
+  api: "/user",
+  port: 3000,
+  database: "users",
+  schema: {
+    //JSON schema
+  },
+};
 
-generator.createProject(schema);
-
+generator.createProject(data);
 ```
-
 
 ### Use with command line interface
 
 ```sh
-$ npm install -g microservice-generator
+$ npm install -g @agtech/ms-gen
 
-$ misgen -h
+$ msgen -h
 
-Usage: misgen [options] <name>
+Usage: msgen [options] <name>
 
 Options:
 
   -V, --version  output the version number
-  -d, --dir      Directory name 
+  -d, --dir      Directory name
   -h, --help     output usage information
 
 
@@ -71,13 +47,12 @@ Options:
 
 ```sh
 
-$ misgen schema.json
+$ msgen schema.json
 
 #The project folder will be generated at the location of schema.json file
 ```
 
-
-### Schema JSON Structure
+### JSON Data Structure
 
 ```javascript
 {
@@ -86,42 +61,41 @@ $ misgen schema.json
     "port":3000, //Optional. Port number in which this microservice will be running
     "database":"users", //Optional. Name of database in which this microservice will create it's collection
     "schema":{
-        //mongoose schema
+        //JSON schema
     }
 }
 ```
-- Example mongoose schema
+
+- Example JSON schema
+
 ```javascript
 {
-    "name": "String",
-    "email": {
-        "type": "String",
-        "unique": true,
-        "required": true
-    },
-    "password": "String",
-    "contactNos": [
-        {
-            "code": "String",
-            "number": "Number"
+    "$id": "https://example.com/person.schema.json",
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "Person",
+    "type": "object",
+    "properties": {
+        "firstName": {
+        "type": "string",
+        "description": "The person's first name."
+        },
+        "lastName": {
+        "type": "string",
+        "description": "The person's last name."
+        },
+        "age": {
+        "description": "Age in years which must be equal to or greater than zero.",
+        "type": "integer",
+        "minimum": 0
         }
-    ],
-    "gender": "String",
-    "address": {
-        "houseNo": "String",
-        "street": "String",
-        "city": "String",
-        "state": "String",
-        "country": "String",
-        "pincode": "Number"
     }
 }
 ```
-- [More info on mongoose schema](http://mongoosejs.com/docs/guide.html)
+
+- [More info on JSON schema](https://json-schema.org/learn/getting-started-step-by-step.html)
 
 <!--[API Documentation](https://github.com/jugnuagrawal/microservice-generator/wiki)-->
 
-License
-----
+## License
 
 MIT
