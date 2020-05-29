@@ -3,10 +3,12 @@
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
+const chalk = require('chalk');
+
 const generator = require('./index');
 
 program
-    .version('2.2.5')
+    .version('1.0.0')
     .usage('[options] <name>')
     .arguments('<name>')
     .option('-d, --dir', 'Directory name')
@@ -25,12 +27,12 @@ program
 
 function getSchema(filePath) {
     try {
-        fs.statSync(filePath)
+        fs.statSync(filePath);
         let data = fs.readFileSync(filePath, 'utf8');
         const json = JSON.parse(data);
         json.filePath = filePath;
         generator.createProject(json);
     } catch (e) {
-        console.log(e.message);
+        console.log(chalk.red(e.message));
     }
 }

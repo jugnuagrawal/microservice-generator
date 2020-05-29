@@ -1,10 +1,6 @@
-const path = require('path');
-
-module.exports.getContent = _getContent;
-
-function _getContent(_nameKebabCase) {
+function getContent(data) {
   return `
-# ${_nameKebabCase}
+# ${data.nameKebabCase}
 
 ## docker variables
 
@@ -16,3 +12,5 @@ function _getContent(_nameKebabCase) {
 | LOGS | -v <<_your_path_>>:/logs |
     `;
 }
+
+module.exports.getContent = getContent;

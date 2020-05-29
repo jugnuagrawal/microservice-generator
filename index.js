@@ -1,12 +1,10 @@
 const path = require('path');
 const fs = require('fs');
-const fse = require('fs-extra');
+const mkdirp = require('mkdirp');
+const chalk = require('chalk');
+
 const package = require('./templates/package.template');
 const app = require('./templates/app.template');
-const controller = require('./templates/controller.template');
-const indexController = require('./templates/index.controller');
-const swagger = require('./templates/yaml.template');
-const messages = require('./templates/messages.template');
 const docker = require('./templates/docker.template');
 const readme = require('./templates/readme.template');
 
@@ -22,67 +20,47 @@ String.prototype.toKebabCase = function () {
     return this.split(' ').map(e => e.toLowerCase()).join('-');
 }
 
-function createProject(_data) {
-    var _nameCamelCase = _data.name.toCamelCase();
-    var _nameKebabCase = _data.name.toKebabCase();
-    var _namePascalCase = _data.name.toPascalCase();
-    var _api = _data.api ? _data.api : _nameCamelCase;
-    var _path = path.join(_nameKebabCase);
-    if (_data.filePath) {
-        var segments = _data.filePath.split('/');
-        segments.pop();
-        segments.push(_nameKebabCase);
-        _path = segments.join('/');
+function createProject(data) {
+    data.nameCamelCase = data.name.toCamelCase();
+    data.nameKebabCase = data.name.toKebabCase();
+    if (!data.api) {
+        data.api = data.nameCamelCase;
     }
-    var _database = _data.database ? _data.database : _nameCamelCase;
-    var _port = _data.port ? _data.port : 3000;
-    if (!fs.existsSync(_path)) {
-        fs.mkdirSync(_path);
+    if (!data.database) {
+        data.database = data.nameCamelCase;
     }
-    if (!fs.existsSync(path.join(_path, 'api'))) {
-        fs.mkdirSync(path.join(_path, 'api'));
+    if (!data.port) {
+        data.port = 3000;
     }
-    if (!fs.existsSync(path.join(_path, 'api', 'controllers'))) {
-        fs.mkdirSync(path.join(_path, 'api', 'controllers'));
-    }
-    if (!fs.existsSync(path.join(_path, 'api', 'schemas'))) {
-        fs.mkdirSync(path.join(_path, 'api', 'schemas'));
-    }
-    if (!fs.existsSync(path.join(_path, 'api', 'messages'))) {
-        fs.mkdirSync(path.join(_path, 'api', 'messages'));
-    }
-    if (!fs.existsSync(path.join(_path, 'apidoc'))) {
-        fs.mkdirSync(path.join(_path, 'apidoc'));
-    }
-    if (!fs.existsSync(path.join(_path, 'api', 'swagger'))) {
-        fs.mkdirSync(path.join(_path, 'api', 'swagger'));
-    }
-
-    fse.copySync(path.join(__dirname, 'apidoc'), path.join(_path, 'apidoc'));
-
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', _nameKebabCase + '.controller.js'), controller.getContent(_nameCamelCase, _nameKebabCase), 'utf-8');
-    console.log(_nameKebabCase + '.controller.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'controllers', 'index.js'), indexController.getContent(_nameCamelCase, _nameKebabCase), 'utf-8');
-    console.log('index.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'schemas', _nameKebabCase + '.schema.json'), JSON.stringify(_data.schema, null, 4), 'utf-8');
-    console.log(_nameKebabCase + '.schema.json created!');
-    fs.writeFileSync(path.join(_path, 'api', 'messages', _nameKebabCase + '.messages.js'), messages.getContent(), 'utf-8');
-    console.log(_nameKebabCase + '.messages.js created!');
-    fs.writeFileSync(path.join(_path, 'api', 'swagger', _nameKebabCase + '.swagger.yaml'), swagger.getContent(_data), 'utf-8')
-    console.log(_nameKebabCase + '.swagger.yaml created!');
-
-    fs.writeFileSync(path.join(_path, 'app.js'), app.getContent(_nameKebabCase, path.join('/', _api), _database, _port), 'utf-8')
-    console.log('app.js created!');
-    fs.writeFileSync(path.join(_path, 'package.json'), package.getContent(_nameKebabCase), 'utf-8')
-    console.log('package.json created!');
-    fs.writeFileSync(path.join(_path, '.gitignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
-    console.log('.gitignore created!');
-    fs.writeFileSync(path.join(_path, 'Dockerfile'), docker.getContent(_port, _database), 'utf-8');
-    console.log('Dockerfile created!');
-    fs.writeFileSync(path.join(_path, '.dockerignore'), 'node_modules\nlogs\n.vscode\npackage-lock.json', 'utf-8');
-    console.log('.dockerignore created!');
-    fs.writeFileSync(path.join(_path, 'README.md'), readme.getContent(_nameKebabCase), 'utf-8');
-    console.log('README.md created!');
+    const folderPath = path.join(process.cwd(), data.nameKebabCase);
+    console.log(chalk.green('**********************'));
+    console.log(chalk.green('Process Started'));
+    console.log(chalk.green('**********************'));
+    mkdirp.sync(folderPath);
+    console.log(chalk.cyan('\nFolder Created :: ' + data.nameKebabCase));
+    fs.writeFileSync(path.join(folderPath, 'package.json'), package.getContent(data), 'utf-8')
+    console.log(chalk.cyan('\npackage.json created!'));
+    fs.writeFileSync(path.join(folderPath, 'app.js'), app.getContent(data), 'utf-8')
+    console.log(chalk.cyan('\napp.js created!'));
+    fs.copyFileSync(path.join(__dirname, 'templates/controller.js'), path.join(folderPath, 'controller.js'));
+    console.log(chalk.cyan('\ncontroller.js created!'));
+    fs.copyFileSync(path.join(__dirname, 'templates/model.js'), path.join(folderPath, 'model.js'));
+    console.log(chalk.cyan('\nmodel.js created!'));
+    fs.copyFileSync(path.join(__dirname, 'templates/utils.js'), path.join(folderPath, 'utils.js'));
+    console.log(chalk.cyan('\nutils.js created!'));
+    fs.writeFileSync(path.join(folderPath, 'schema.json'), JSON.stringify(data.schema, null, 4), 'utf-8');
+    console.log(chalk.cyan('\nschema.json created!'));
+    fs.writeFileSync(path.join(folderPath, '.gitignore'), 'node_modules\nlogs\n.vscode\n', 'utf-8');
+    console.log(chalk.cyan('\n.gitignore created!'));
+    fs.writeFileSync(path.join(folderPath, '.dockerignore'), 'node_modules\nlogs\n.vscode', 'utf-8');
+    console.log(chalk.cyan('\n.dockerignore created!'));
+    fs.writeFileSync(path.join(folderPath, 'Dockerfile'), docker.getContent(data), 'utf-8');
+    console.log(chalk.cyan('\nDockerfile created!'));
+    fs.writeFileSync(path.join(folderPath, 'README.md'), readme.getContent(data), 'utf-8');
+    console.log(chalk.cyan('\nREADME.md created!\n'));
+    console.log(chalk.green('**********************'));
+    console.log(chalk.green('Process Ended'));
+    console.log(chalk.green('**********************'));
 }
 
 
