@@ -2,6 +2,16 @@
 
 A node js tool to generate a microservice to do CRUD operation over REST API for the given JSON Schema.
 
+## Quick Use
+
+```sh
+npm install -g @agtech/ms-gen
+
+msgen <JSON_SCHEMA_FILE>
+
+# The project will be generated in the same folder where JSON_SCHEMA_FILE file is present.
+```
+
 ### Use like a node module
 
 ```sh
@@ -26,7 +36,7 @@ var data = {
 generator.createProject(data);
 ```
 
-### Use with command line interface
+### Full CLI Example
 
 ```sh
 $ npm install -g @agtech/ms-gen

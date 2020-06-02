@@ -21,6 +21,12 @@ String.prototype.toKebabCase = function () {
 }
 
 function createProject(data) {
+    if (!data.schema && data.$schema) {
+        data = {
+            name: data.title,
+            schema: JSON.parse(JSON.stringify(data))
+        };
+    }
     data.nameCamelCase = data.name.toCamelCase();
     data.nameKebabCase = data.name.toKebabCase();
     if (!data.api) {

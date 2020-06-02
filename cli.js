@@ -30,7 +30,7 @@ function getSchema(filePath) {
         fs.statSync(filePath);
         let data = fs.readFileSync(filePath, 'utf8');
         const json = JSON.parse(data);
-        json.filePath = filePath;
+        // json.filePath = filePath;
         generator.createProject(json);
     } catch (e) {
         console.log(chalk.red(e.message));
